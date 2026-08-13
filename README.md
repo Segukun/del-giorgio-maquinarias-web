@@ -1,43 +1,67 @@
-# Del Giorgio Maquinarias
+# Del Giorgio Maquinarias - Web
 
-Sitio web desarrollado para **Del Giorgio Maquinarias**, empresa dedicada a la venta de maquinaria agrícola nueva y usada, repuestos y servicio postventa.
+Sitio web de **Del Giorgio Maquinarias**, orientado a generar presencia digital para el negocio y facilitar el contacto con clientes interesados en maquinaria agrícola, repuestos y servicio postventa.
 
-El objetivo del proyecto es crear una plataforma web moderna y responsive que permita mostrar el catálogo de maquinaria disponible, las marcas comercializadas y facilitar el contacto directo con potenciales clientes.
+El proyecto se plantea de forma incremental: la primera versión será una web institucional simple y profesional; luego podrá evolucionar hacia un catálogo de maquinaria nueva y usada, filtros, marcas, destacados y un panel de administración.
 
-## Funcionalidades previstas
+## Objetivo principal
 
-* Catálogo de maquinaria nueva
-* Catálogo de maquinaria usada
-* Filtros por categoría y marca
-* Página individual para cada maquinaria
-* Galería de imágenes
-* Sección de marcas
-* Maquinaria destacada
-* Estados de disponibilidad
-* Integración con WhatsApp
-* Información de contacto
-* Ubicación mediante Google Maps
-* Sección de repuestos y servicio postventa
-* Diseño responsive para desktop, tablet y mobile
+- Contar con una presencia web propia bajo un dominio de la empresa.
+- Centralizar información comercial, ubicación y medios de contacto.
+- Facilitar consultas mediante WhatsApp y teléfono.
+- Preparar la base para utilizar correo electrónico corporativo con el dominio del negocio.
+- Permitir futuras ampliaciones sin rehacer el proyecto desde cero.
 
-## Secciones
+## Alcance inicial - V1
 
-* Inicio
-* Nuevos
-* Usados
-* Marcas
-* Repuestos y Servicio
-* Nosotros
-* Contacto
+La primera versión prioriza simplicidad y presencia institucional.
 
-## Estado del proyecto
+- Inicio / presentación de la empresa.
+- Maquinaria nueva y usada como secciones comerciales simples.
+- Marcas con las que trabaja la empresa.
+- Repuestos y servicio postventa.
+- Información de contacto.
+- Botón de WhatsApp.
+- Ubicación / mapa.
+- Enlaces a redes sociales.
+- Diseño responsive.
+- Preparación para dominio y correo corporativo.
 
-🚧 En desarrollo.
+## Evolución prevista
 
-## Tecnologías
+En futuras versiones se podrá incorporar:
 
-Las tecnologías utilizadas serán definidas durante la etapa inicial de desarrollo.
+- Catálogo dinámico de maquinaria.
+- Filtros por marca, categoría, modelo y año.
+- Fichas individuales con galerías de imágenes.
+- Estados: disponible, reservado y vendido.
+- Maquinaria destacada.
+- Panel administrativo.
+- Gestión de marcas y categorías.
+- SEO y analítica.
 
-## Autores
+## Estructura del repositorio
+
+```text
+/
+├── docs/       # Requisitos, decisiones y documentación funcional
+├── frontend/   # Interfaz web
+├── backend/    # API y lógica de negocio cuando sea necesaria
+└── README.md
+```
+
+## Estado
+
+Proyecto en etapa inicial de definición y planificación.
+
+## Documentación
+
+La documentación funcional y los requisitos se encuentran en la carpeta `docs/`.
+
+## Seguridad
+
+El repositorio no debe contener credenciales ni secretos. Archivos como `.env`, claves de API, contraseñas y credenciales de base de datos deben permanecer fuera del control de versiones.
+
+## Autoría
 
 Proyecto desarrollado para **Del Giorgio Maquinarias**.
