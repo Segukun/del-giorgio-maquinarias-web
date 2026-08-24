@@ -1,0 +1,155 @@
+.dg-featured {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem;
+}
+
+.dg-featured__header h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 1.25rem;
+}
+
+.dg-featured__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.dg-product-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dg-product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1);
+}
+
+.dg-product-card__image-wrap {
+  position: relative;
+  background: #f4f4f4;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.dg-product-card__image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.dg-product-card:hover .dg-product-card__image-wrap img {
+  transform: scale(1.06);
+}
+
+.dg-product-card__badges {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-start;
+}
+
+.dg-product-card__badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.dg-product-card__badge.is-new {
+  background: #1a5fb4;
+}
+.dg-product-card__badge.is-used {
+  background: #b3541e;
+}
+
+.dg-product-card__body {
+  padding: 1rem;
+}
+
+.dg-product-card__body h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.3rem;
+}
+
+.dg-product-card__meta {
+  font-size: 0.82rem;
+  color: #666;
+  margin-bottom: 0.15rem;
+}
+
+.dg-product-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dg-btn--small {
+  padding: 0.55rem 1.1rem;
+  font-size: 0.82rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.dg-product-card__whatsapp {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.dg-product-card__whatsapp:hover {
+  transform: scale(1.1);
+}
+
+.dg-featured__footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.dg-btn--outline-dark {
+  background: #fff;
+  border: 1.5px solid #a11f2b;
+  color: #a11f2b;
+}
+
+.dg-btn--outline-dark:hover {
+  background: #a11f2b;
+  color: #fff;
+}
+
+@media (max-width: 1080px) {
+  .dg-featured__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .dg-featured__grid {
+    grid-template-columns: 1fr;
+  }
+}

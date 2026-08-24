@@ -1,0 +1,11 @@
+.dg-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #fafafa;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.dg-page main {
+  flex: 1;
+}
