@@ -1,0 +1,47 @@
+.dg-catalog-hero {
+  position: relative;
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  color: #fff;
+}
+
+.dg-catalog-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(10, 10, 10, 0.78) 0%,
+    rgba(10, 10, 10, 0.4) 55%,
+    rgba(10, 10, 10, 0.15) 100%
+  );
+}
+
+.dg-catalog-hero__content {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 1.5rem 1.75rem;
+}
+
+.dg-catalog-hero__content h1 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  margin-bottom: 0.3rem;
+}
+
+.dg-catalog-hero__content p {
+  font-size: 0.95rem;
+  color: #f0e6e6;
+  max-width: 420px;
+}
+
+@media (max-width: 640px) {
+  .dg-catalog-hero {
+    height: 170px;
+  }
+}

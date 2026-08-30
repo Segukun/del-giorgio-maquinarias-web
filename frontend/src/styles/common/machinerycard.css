@@ -1,0 +1,112 @@
+.dg-machinery-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  overflow: hidden;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.dg-machinery-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1);
+}
+
+.dg-machinery-card__image-wrap {
+  position: relative;
+  background: #f4f4f4;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.dg-machinery-card__image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.dg-machinery-card:hover
+  .dg-machinery-card__image-wrap img {
+  transform: scale(1.06);
+}
+
+.dg-machinery-card__badges {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-start;
+}
+
+.dg-machinery-card__badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.dg-machinery-card__badge.is-new {
+  background: #1a5fb4;
+}
+
+.dg-machinery-card__badge.is-used {
+  background: #b3541e;
+}
+
+.dg-machinery-card__body {
+  padding: 1rem;
+}
+
+.dg-machinery-card__body h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.3rem;
+}
+
+.dg-machinery-card__meta {
+  font-size: 0.82rem;
+  color: #666;
+  margin-bottom: 0.15rem;
+}
+
+.dg-machinery-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.dg-machinery-card__whatsapp {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.dg-machinery-card__whatsapp:hover {
+  transform: scale(1.1);
+}
+
+.dg-btn--small {
+  padding: 0.55rem 1.1rem;
+  font-size: 0.82rem;
+  flex: 1;
+  justify-content: center;
+}
