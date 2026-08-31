@@ -9,7 +9,7 @@ import {
   HOURS_RANGE,
 } from "./filtersdata";
 
-export default function FiltersSidebar({ filters, onChange, onApply, onReset }) {
+const FiltersSidebar = ({ filters, onChange, onApply, onReset }) => {
   const set = (patch) => onChange({ ...filters, ...patch });
 
   const toggleCondition = (key) =>
@@ -208,3 +208,5 @@ function DualRange({ min, max, step = 1, value, onChange, unit = "" }) {
     </div>
   );
 }
+
+export default FiltersSidebar;

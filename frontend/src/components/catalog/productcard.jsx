@@ -6,7 +6,7 @@ const CONDITION_LABELS = {
   usado: { label: "Usado", className: "is-used" },
 };
 
-export default function ProductCard({ product }) {
+const ProductCard = ({ product }) => {
   const condition = CONDITION_LABELS[product.condition];
 
   const whatsappHref =
@@ -52,3 +52,5 @@ export default function ProductCard({ product }) {
     </article>
   );
 }
+
+export default ProductCard;

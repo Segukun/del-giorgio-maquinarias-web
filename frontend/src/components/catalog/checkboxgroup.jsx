@@ -1,6 +1,6 @@
 import "../../styles/catalog/checkboxgroup.css";
 
-export default function CheckboxGroup({ options, selected, onToggle }) {
+const CheckboxGroup = ({ options, selected, onToggle }) => {
   return (
     <div className="dg-checkgroup">
       {options.map((opt) => {
@@ -20,3 +20,5 @@ export default function CheckboxGroup({ options, selected, onToggle }) {
     </div>
   );
 }
+
+export default CheckboxGroup;

@@ -12,7 +12,7 @@ import {
 
 const ACCORDION_SECTIONS = ["categoria", "marca", "horas", "potencia", "traccion", "ancho"];
 
-export default function FiltersModal({ open, filters, onChange, onApply, onReset, onClose }) {
+const FiltersModal = ({ open, filters, onChange, onApply, onReset, onClose }) => {
   const [openSection, setOpenSection] = useState(null);
 
   if (!open) return null;
@@ -215,3 +215,5 @@ function AccordionRow({ title, isOpen, onToggle, children }) {
     </div>
   );
 }
+
+export default FiltersModal;

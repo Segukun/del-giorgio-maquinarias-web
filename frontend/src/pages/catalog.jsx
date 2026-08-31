@@ -26,7 +26,7 @@ const POWER_RANGE_MAP = {
 const isRangeNarrowed = (value, defaultRange) =>
   value[0] !== defaultRange.min || value[1] !== defaultRange.max;
 
-export default function Catalog() {
+const Catalog = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState(DEFAULT_FILTERS);
@@ -148,3 +148,5 @@ export default function Catalog() {
     </div>
   );
 }
+
+export default Catalog;

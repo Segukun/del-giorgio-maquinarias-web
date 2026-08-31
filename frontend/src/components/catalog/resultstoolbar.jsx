@@ -7,14 +7,14 @@ const SORT_OPTIONS = [
   { value: "ancho", label: "Ancho de trabajo" },
 ];
 
-export default function ResultsToolbar({
+const ResultsToolbar = ({
   query,
   resultCount,
   sort,
   onSortChange,
   activeFilterCount,
   onOpenMobileFilters,
-}) {
+}) => {
   return (
     <div className="dg-toolbar">
       <div className="dg-toolbar__info">
@@ -64,3 +64,5 @@ export default function ResultsToolbar({
     </div>
   );
 }
+
+export default ResultsToolbar;

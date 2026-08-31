@@ -1,7 +1,7 @@
 import "../../styles/catalog/productgrid.css";
 import MachineryCard from "../common/machinerycard";
 
-export default function ProductGrid({ products, visibleCount, onLoadMore }) {
+const ProductGrid = ({ products, visibleCount, onLoadMore }) => {
   const visible = products.slice(0, visibleCount);
   const hasMore = visibleCount < products.length;
 
@@ -26,3 +26,5 @@ export default function ProductGrid({ products, visibleCount, onLoadMore }) {
     </div>
   );
 }
+
+export default ProductGrid;

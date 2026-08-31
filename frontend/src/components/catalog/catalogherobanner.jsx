@@ -1,6 +1,6 @@
 import "../../styles/catalog/catalogherobanner.css";
 
-export default function CatalogHeroBanner({ title, subtitle }) {
+const CatalogHeroBanner = ({ title, subtitle }) => {
   return (
     <section
       className="dg-catalog-hero"
@@ -14,3 +14,5 @@ export default function CatalogHeroBanner({ title, subtitle }) {
     </section>
   );
 }
+
+export default CatalogHeroBanner;
