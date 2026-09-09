@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import AdminLogin from "../components/admin/adminlogin";
-import AdminForgotPassword from "../components/admin/adminforgotpassword";
+import AdminLogin from "../../components/admin/adminlogin";
+import AdminForgotPassword from "../../components/admin/adminforgotpassword";
 
-import "../styles/pages/adminlogin.css";
+import "../../styles/admin/adminlogin.css";
 
 const AdminLoginPage = () => {
   const [view, setView] = useState("login");

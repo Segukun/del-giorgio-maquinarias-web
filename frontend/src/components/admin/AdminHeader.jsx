@@ -1,4 +1,5 @@
-import { FiChevronDown, FiMenu, FiUser, FiX } from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi";
+import AdminProfileMenu from "./adminprofilemenu";
 
 const AdminHeader = ({ isMenuOpen, onMenuToggle }) => (
   <header className="dg-admin-header">
@@ -21,13 +22,7 @@ const AdminHeader = ({ isMenuOpen, onMenuToggle }) => (
       </div>
     </div>
 
-    <button className="dg-admin-header__profile" type="button" aria-label="Menú de Segundo">
-      <span className="dg-admin-header__avatar" aria-hidden="true">
-        <FiUser />
-      </span>
-      <span>Segundo</span>
-      <FiChevronDown aria-hidden="true" />
-    </button>
+    <AdminProfileMenu />
   </header>
 );
 

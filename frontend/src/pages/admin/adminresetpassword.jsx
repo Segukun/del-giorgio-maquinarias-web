@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { verifyPasswordResetCode, confirmPasswordReset } from "firebase/auth";
-import { auth } from "../firebase/config";
+import { auth } from "../../firebase/config";
 
-import AdminResetSuccess from "../components/admin/adminresetsuccess";
-import "../styles/pages/adminlogin.css";
+import AdminResetSuccess from "../../components/admin/adminresetsuccess";
+import "../../styles/admin/adminlogin.css";
 
 const AdminResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
