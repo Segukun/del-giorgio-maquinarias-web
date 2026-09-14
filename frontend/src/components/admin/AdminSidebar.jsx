@@ -1,21 +1,23 @@
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { FiGrid, FiHome, FiPackage, FiTag, FiX } from "react-icons/fi";
 
 const SIDEBAR_ITEMS = [
-  { label: "Inicio", icon: FiHome },
-  { label: "Productos", icon: FiPackage, active: true },
-  { label: "Categorías", icon: FiTag },
-  { label: "Marcas", icon: FiGrid },
+  { label: "Inicio", icon: FiHome, path: "/admin/panel/inicio" },
+  { label: "Productos", icon: FiPackage, path: "/admin/panel/productos" },
+  { label: "Categorías", icon: FiTag, path: null },
+  { label: "Marcas", icon: FiGrid, path: null },
 ];
 
 const AdminSidebar = ({ isOpen, onClose, onUnavailable }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (!isOpen) return undefined;
-
     const handleKeyDown = (event) => {
       if (event.key === "Escape") onClose();
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
@@ -31,21 +33,25 @@ const AdminSidebar = ({ isOpen, onClose, onUnavailable }) => {
         </div>
 
         <nav aria-label="Navegación administrativa">
-          {SIDEBAR_ITEMS.map(({ label, icon: Icon, active }) => (
-            <button
-              key={label}
-              className={`dg-admin-sidebar__item ${active ? "is-active" : ""}`}
-              type="button"
-              aria-current={active ? "page" : undefined}
-              onClick={() => {
-                onClose();
-                if (!active) onUnavailable(label);
-              }}
-            >
-              <Icon aria-hidden="true" />
-              <span>{label}</span>
-            </button>
-          ))}
+          {SIDEBAR_ITEMS.map(({ label, icon: Icon, path }) => {
+            const isActive = path && location.pathname === path;
+            return (
+              <button
+                key={label}
+                className={`dg-admin-sidebar__item ${isActive ? "is-active" : ""}`}
+                type="button"
+                aria-current={isActive ? "page" : undefined}
+                onClick={() => {
+                  onClose();
+                  if (path) navigate(path);
+                  else onUnavailable(label);
+                }}
+              >
+                <Icon aria-hidden="true" />
+                <span>{label}</span>
+              </button>
+            );
+          })}
         </nav>
 
         <div className="dg-admin-sidebar__footer">
@@ -55,12 +61,7 @@ const AdminSidebar = ({ isOpen, onClose, onUnavailable }) => {
       </aside>
 
       {isOpen && (
-        <button
-          className="dg-admin-sidebar__backdrop"
-          type="button"
-          aria-label="Cerrar menú"
-          onClick={onClose}
-        />
+        <button className="dg-admin-sidebar__backdrop" type="button" aria-label="Cerrar menú" onClick={onClose} />
       )}
     </>
   );

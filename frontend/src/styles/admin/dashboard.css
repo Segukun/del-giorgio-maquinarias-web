@@ -1,0 +1,487 @@
+/* =========================================================
+   DASHBOARD - CONTENEDOR GENERAL
+========================================================= */
+
+.dg-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+}
+
+.dg-dashboard__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.dg-dashboard__title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dg-dashboard__title-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #8d1717;
+  color: #ffffff;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.dg-dashboard__title-group h1 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #171717;
+}
+
+.dg-dashboard__title-group p {
+  margin: 0;
+  font-size: 13px;
+  color: #666666;
+}
+
+/* =========================================================
+   TABS
+========================================================= */
+
+.dg-dashboard__tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.dg-dashboard__tabs button {
+  background: transparent;
+  border: none;
+  padding: 10px 2px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666666;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.dg-dashboard__tabs button:hover {
+  color: #8d1717;
+}
+
+.dg-dashboard__tabs button.is-active {
+  color: #8d1717;
+}
+
+.dg-dashboard__tabs button.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: #8d1717;
+  border-radius: 2px;
+}
+
+/* =========================================================
+   STAT CARDS GRID
+========================================================= */
+
+.dg-dashboard__stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.dg-dashboard__stats-grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.dg-dashboard__stats-grid--2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.dg-stat-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.dg-stat-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(141, 23, 23, 0.08);
+  color: #8d1717;
+  font-size: 19px;
+  flex-shrink: 0;
+}
+
+.dg-stat-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dg-stat-card__label {
+  font-size: 12.5px;
+  color: #666666;
+  font-weight: 600;
+}
+
+.dg-stat-card__value {
+  font-size: 26px;
+  font-weight: 700;
+  color: #171717;
+  line-height: 1.1;
+}
+
+.dg-stat-card__change {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dg-stat-card__change.is-positive {
+  color: #2f9e52;
+}
+
+.dg-stat-card__change.is-negative {
+  color: #c1332f;
+}
+
+/* =========================================================
+   DASHBOARD CARDS (genérico, para top máquinas, actividad, etc.)
+========================================================= */
+
+.dg-dashboard__two-col {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 16px;
+}
+
+.dg-dashboard-card {
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dg-dashboard-card__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dg-dashboard-card__heading span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #171717;
+}
+
+.dg-dashboard-card__heading button {
+  background: transparent;
+  border: none;
+  color: #8d1717;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dg-dashboard-card__heading button:hover {
+  text-decoration: underline;
+}
+
+.dg-dashboard-card__empty {
+  margin: 0;
+  font-size: 13px;
+  color: #999999;
+  padding: 12px 0;
+  text-align: center;
+}
+
+/* =========================================================
+   TOP MÁQUINAS
+========================================================= */
+
+.dg-top-machines-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dg-top-machines-table th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #999999;
+  padding: 0 0 10px;
+  font-weight: 600;
+}
+
+.dg-top-machines-table td {
+  padding: 8px 0;
+  font-size: 13.5px;
+  color: #333333;
+  border-top: 1px solid #f2f2f2;
+  vertical-align: middle;
+}
+
+.dg-top-machines-table td:first-child {
+  width: 24px;
+  color: #999999;
+  font-weight: 600;
+}
+
+.dg-top-machines-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dg-top-machines-bar::before {
+  content: "";
+  flex: 1;
+  height: 6px;
+  border-radius: 4px;
+  background: #f0f0f0;
+}
+
+.dg-top-machines-bar__fill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 6px;
+  border-radius: 4px;
+  background: #8d1717;
+  max-width: calc(100% - 40px);
+}
+
+.dg-top-machines-bar span {
+  min-width: 32px;
+  text-align: right;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #666666;
+}
+
+/* =========================================================
+   ACTIVIDAD RECIENTE
+========================================================= */
+
+.dg-activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dg-activity-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #f2f2f2;
+}
+
+.dg-activity-list li:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.dg-activity-list__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(141, 23, 23, 0.08);
+  color: #8d1717;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.dg-activity-list__text {
+  flex: 1;
+  font-size: 13px;
+  color: #333333;
+  line-height: 1.4;
+}
+
+.dg-activity-list__time {
+  font-size: 11.5px;
+  color: #999999;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   FUENTES DE TRÁFICO / UBICACIÓN / DISPOSITIVO
+========================================================= */
+
+.dg-source-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dg-source-list li {
+  display: grid;
+  grid-template-columns: 120px 1fr 40px;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: #333333;
+}
+
+.dg-source-list__bar {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+
+.dg-source-list__fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 4px;
+  background: #8d1717;
+}
+
+.dg-source-list li:last-child span:last-child,
+.dg-source-list li span:last-child {
+  text-align: right;
+  font-weight: 600;
+  color: #666666;
+}
+
+/* =========================================================
+   ACCIONES RÁPIDAS
+========================================================= */
+
+.dg-dashboard__quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.dg-dashboard__quick-actions .dg-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  font-size: 13.5px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1024px) {
+  .dg-dashboard__stats-grid,
+  .dg-dashboard__stats-grid--3,
+  .dg-dashboard__stats-grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dg-dashboard__two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .dg-dashboard__quick-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .dg-dashboard {
+    padding: 16px;
+  }
+
+  .dg-dashboard__stats-grid,
+  .dg-dashboard__stats-grid--3,
+  .dg-dashboard__stats-grid--2 {
+    grid-template-columns: 1fr;
+  }
+
+  .dg-dashboard__quick-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .dg-source-list li {
+    grid-template-columns: 90px 1fr 34px;
+  }
+}
+
+
+
+
+
+/* =========================================================
+   MOVIMIENTOS RECIENTES (Interactividad)
+========================================================= */
+
+.dg-recent-events-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dg-recent-events-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f2f2f2;
+  font-size: 13px;
+  color: #333333;
+}
+
+.dg-recent-events-list li:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.dg-recent-events-list__time {
+  font-size: 12px;
+  color: #999999;
+  white-space: nowrap;
+  flex-shrink: 0;
+}

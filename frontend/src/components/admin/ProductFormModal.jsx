@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiImage, FiUploadCloud } from "react-icons/fi";
+import { FiImage, FiUploadCloud, FiX } from "react-icons/fi";
 import AdminModal from "./AdminModal.jsx";
 
 const EMPTY_PRODUCT = {
@@ -10,33 +10,43 @@ const EMPTY_PRODUCT = {
   status: "Borrador",
   year: new Date().getFullYear(),
   detail: "",
+  workWidth: "",
+  hoursTag: "",
+  hoursValue: "",
+  featured: false,
   images: [],
 };
 
 const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
   const [form, setForm] = useState(product ?? EMPTY_PRODUCT);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [existingImages, setExistingImages] = useState(product?.images ?? []);
+  const [saving, setSaving] = useState(false);
   const isEditing = Boolean(product);
 
   const update = (field, value) => setForm((current) => ({ ...current, [field]: value }));
 
-  const handleSubmit = (event) => {
+  const removeExistingImage = (url) => {
+    setExistingImages((current) => current.filter((image) => image !== url));
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    onSubmit(form, isEditing);
+    setSaving(true);
+    try {
+      await onSubmit({ ...form, images: existingImages }, selectedFiles, isEditing);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
     <AdminModal
       title={isEditing ? "Editar producto" : "Nuevo producto"}
-      eyebrow="Vista de demostración"
       onClose={onClose}
       size="large"
     >
       <form className="dg-product-form" onSubmit={handleSubmit}>
-        <div className="dg-product-form__notice">
-          Esta vista deja preparado el flujo. Los cambios no se guardarán fuera de esta sesión.
-        </div>
-
         <div className="dg-product-form__grid">
           <div className="dg-product-form__field is-wide">
             <span className="dg-product-form__label">Imágenes de la máquina</span>
@@ -49,20 +59,32 @@ const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
               />
               <FiUploadCloud aria-hidden="true" />
               <strong>Seleccionar varias imágenes</strong>
-              <span>JPG, PNG o WebP. La carga definitiva se conectará con Firebase Storage.</span>
+              <span>JPG, PNG o WebP.</span>
             </label>
 
             {selectedFiles.length ? (
               <div className="dg-product-form__selected-images" aria-live="polite">
                 <FiImage aria-hidden="true" />
                 <span>
-                  {selectedFiles.length} {selectedFiles.length === 1 ? "imagen seleccionada" : "imágenes seleccionadas"}
+                  {selectedFiles.length} {selectedFiles.length === 1 ? "imagen nueva seleccionada" : "imágenes nuevas seleccionadas"}
                 </span>
               </div>
-            ) : product?.images?.length ? (
-              <div className="dg-product-form__selected-images">
-                <FiImage aria-hidden="true" />
-                <span>{product.images.length} imágenes cargadas actualmente</span>
+            ) : null}
+
+            {existingImages.length ? (
+              <div className="dg-product-form__existing-images">
+                {existingImages.map((url) => (
+                  <div key={url} className="dg-product-form__existing-image">
+                    <img src={url} alt="" />
+                    <button
+                      type="button"
+                      aria-label="Quitar imagen"
+                      onClick={() => removeExistingImage(url)}
+                    >
+                      <FiX aria-hidden="true" />
+                    </button>
+                  </div>
+                ))}
               </div>
             ) : null}
           </div>
@@ -79,34 +101,26 @@ const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
 
           <label>
             <span>Marca</span>
-            <input
-              required
-              list="dg-brands"
-              value={form.brand}
-              onChange={(event) => update("brand", event.target.value)}
-              placeholder="Seleccionar marca"
-            />
-            <datalist id="dg-brands">
+            <select required value={form.brand} onChange={(event) => update("brand", event.target.value)}>
+              <option value="">Seleccionar marca</option>
               {options.brands.map((brand) => (
-                <option key={brand} value={brand} />
+                <option key={brand} value={brand}>
+                  {brand}
+                </option>
               ))}
-            </datalist>
+            </select>
           </label>
 
           <label>
             <span>Categoría</span>
-            <input
-              required
-              list="dg-categories"
-              value={form.category}
-              onChange={(event) => update("category", event.target.value)}
-              placeholder="Seleccionar categoría"
-            />
-            <datalist id="dg-categories">
+            <select required value={form.category} onChange={(event) => update("category", event.target.value)}>
+              <option value="">Seleccionar categoría</option>
               {options.categories.map((category) => (
-                <option key={category} value={category} />
+                <option key={category} value={category}>
+                  {category}
+                </option>
               ))}
-            </datalist>
+            </select>
           </label>
 
           <label>
@@ -137,6 +151,45 @@ const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
             />
           </label>
 
+          <label>
+            <span>Ancho de trabajo (m)</span>
+            <input
+              type="number"
+              step="0.1"
+              value={form.workWidth}
+              onChange={(event) => update("workWidth", event.target.value)}
+              placeholder="Ej. 6.5"
+            />
+          </label>
+
+          <label>
+            <span>Horas de uso (valor)</span>
+            <input
+              type="number"
+              value={form.hoursValue}
+              onChange={(event) => update("hoursValue", event.target.value)}
+              placeholder="Ej. 2400"
+            />
+          </label>
+
+          <label>
+            <span>Horas de uso (etiqueta)</span>
+            <input
+              value={form.hoursTag}
+              onChange={(event) => update("hoursTag", event.target.value)}
+              placeholder="Ej. Buen estado"
+            />
+          </label>
+
+          <label className="dg-product-form__checkbox">
+            <input
+              type="checkbox"
+              checked={Boolean(form.featured)}
+              onChange={(event) => update("featured", event.target.checked)}
+            />
+            <span>Destacar producto</span>
+          </label>
+
           <label className="is-wide">
             <span>Descripción breve</span>
             <textarea
@@ -149,11 +202,11 @@ const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
         </div>
 
         <div className="dg-modal__actions">
-          <button className="dg-button dg-button--secondary" type="button" onClick={onClose}>
+          <button className="dg-button dg-button--secondary" type="button" onClick={onClose} disabled={saving}>
             Cancelar
           </button>
-          <button className="dg-button dg-button--primary" type="submit">
-            {isEditing ? "Aplicar cambios" : "Crear producto"}
+          <button className="dg-button dg-button--primary" type="submit" disabled={saving}>
+            {saving ? "Guardando..." : isEditing ? "Aplicar cambios" : "Crear producto"}
           </button>
         </div>
       </form>

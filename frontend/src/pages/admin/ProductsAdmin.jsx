@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FiCheckCircle, FiPackage, FiPlus, FiX } from "react-icons/fi";
 import AdminLayout from "../../components/admin/AdminLayout.jsx";
 import DeleteProductModal from "../../components/admin/DeleteProductModal.jsx";
@@ -7,7 +7,15 @@ import ProductDetailModal from "../../components/admin/ProductDetailModal.jsx";
 import ProductFilters from "../../components/admin/ProductFilters.jsx";
 import ProductFormModal from "../../components/admin/ProductFormModal.jsx";
 import ProductTable from "../../components/admin/ProductTable.jsx";
-import { ADMIN_PRODUCTS } from "../../data/adminProducts.js";
+import {
+  fetchProducts,
+  fetchActiveBrands,
+  fetchActiveCategories,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  toggleProductFeatured,
+} from "../../firebase/products.js";
 import "../../styles/admin/layout.css";
 import "../../styles/admin/products.css";
 
@@ -21,19 +29,47 @@ const normalize = (value) =>
     .replace(/[\u0300-\u036f]/g, "");
 
 const ProductsAdmin = () => {
-  const [products, setProducts] = useState(ADMIN_PRODUCTS);
+  const [products, setProducts] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [currentPage, setCurrentPage] = useState(1);
   const [modal, setModal] = useState(null);
   const [notice, setNotice] = useState("");
 
+  const loadData = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const [productsData, brandsData, categoriesData] = await Promise.all([
+        fetchProducts(),
+        fetchActiveBrands(),
+        fetchActiveCategories(),
+      ]);
+      setProducts(productsData);
+      setBrands(brandsData);
+      setCategories(categoriesData);
+    } catch (err) {
+      console.error(err);
+      setError("No pudimos cargar los productos. Probá recargar la página.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
   const options = useMemo(
     () => ({
-      categories: [...new Set(products.map((product) => product.category))].sort(),
-      brands: [...new Set(products.map((product) => product.brand))].sort(),
+      categories: categories.map((category) => category.name),
+      brands: brands.map((brand) => brand.name),
       statuses: ["Publicado", "Borrador", "Pendiente"],
     }),
-    [products],
+    [categories, brands],
   );
 
   const filteredProducts = useMemo(() => {
@@ -42,7 +78,7 @@ const ProductsAdmin = () => {
     return products.filter((product) => {
       const matchesQuery =
         !query ||
-        normalize(`${product.name} ${product.brand} ${product.category}`).includes(query);
+        normalize(`${product.name ?? ""} ${product.brand ?? ""} ${product.category ?? ""}`).includes(query);
       const matchesCategory = !filters.category || product.category === filters.category;
       const matchesBrand = !filters.brand || product.brand === filters.brand;
       const matchesStatus = !filters.status || product.status === filters.status;
@@ -63,33 +99,70 @@ const ProductsAdmin = () => {
 
   const showNotice = (message) => setNotice(message);
 
-  const handleToggleFeatured = (id) => {
-    setProducts((current) =>
-      current.map((product) =>
-        product.id === id ? { ...product, featured: !product.featured } : product,
-      ),
-    );
-  };
-
-  const handleDelete = (id) => {
+  const handleToggleFeatured = async (id) => {
     const product = products.find((item) => item.id === id);
-    setProducts((current) => current.filter((item) => item.id !== id));
-    setModal(null);
-    showNotice(`${product?.name ?? "El producto"} se quitó temporalmente.`);
+    if (!product) return;
+
+    const nextFeatured = !product.featured;
+    setProducts((current) =>
+      current.map((item) => (item.id === id ? { ...item, featured: nextFeatured } : item)),
+    );
+
+    try {
+      await toggleProductFeatured(id, nextFeatured);
+    } catch (err) {
+      console.error(err);
+      // revertimos si falló en el servidor
+      setProducts((current) =>
+        current.map((item) => (item.id === id ? { ...item, featured: !nextFeatured } : item)),
+      );
+      showNotice("No se pudo actualizar el destacado. Intentá de nuevo.");
+    }
   };
 
-  const handleFormSubmit = (form, isEditing) => {
-    setModal(null);
-    showNotice(
-      isEditing
-        ? `Vista de edición de ${form.name} completada. No se guardaron cambios permanentes.`
-        : `Vista de alta de ${form.name} completada. El producto no se guardó de forma permanente.`,
-    );
+  const handleDelete = async (id) => {
+    const product = products.find((item) => item.id === id);
+    try {
+      await deleteProduct(id);
+      setProducts((current) => current.filter((item) => item.id !== id));
+      setModal(null);
+      showNotice(`${product?.name ?? "El producto"} se eliminó correctamente.`);
+    } catch (err) {
+      console.error(err);
+      showNotice("No se pudo eliminar el producto. Intentá de nuevo.");
+    }
+  };
+
+  const handleFormSubmit = async (form, files, isEditing) => {
+    try {
+      if (isEditing) {
+        await updateProduct(form.id, form, files, form.images ?? []);
+        showNotice(`${form.name} se actualizó correctamente.`);
+      } else {
+        await createProduct(form, files);
+        showNotice(`${form.name} se creó correctamente.`);
+      }
+      setModal(null);
+      await loadData();
+    } catch (err) {
+      console.error(err);
+      showNotice("Ocurrió un error al guardar el producto. Intentá de nuevo.");
+    }
   };
 
   const openEdit = (product) => setModal({ type: "form", product });
 
   const resultEnd = Math.min(pageStart + PAGE_SIZE, filteredProducts.length);
+
+  if (loading) {
+    return (
+      <AdminLayout onUnavailable={(section) => showNotice(`La sección ${section} queda preparada para una próxima etapa.`)}>
+        <section className="dg-products-admin">
+          <p>Cargando productos...</p>
+        </section>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout
@@ -116,6 +189,12 @@ const ProductsAdmin = () => {
             Nuevo producto
           </button>
         </div>
+
+        {error ? (
+          <div className="dg-admin-notice dg-admin-notice--error" role="alert">
+            <span>{error}</span>
+          </div>
+        ) : null}
 
         {notice ? (
           <div className="dg-admin-notice" role="status">
