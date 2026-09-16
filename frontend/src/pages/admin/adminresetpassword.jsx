@@ -15,14 +15,12 @@ const AdminResetPasswordPage = () => {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [validCode, setValidCode] = useState(null); // null = verificando
+  const [validCode, setValidCode] = useState(() => (oobCode ? null : false)); // null = verificando
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (!oobCode) {
-      setValidCode(false);
-      return;
-    }
+    if (!oobCode) return undefined;
+
     verifyPasswordResetCode(auth, oobCode)
       .then(() => setValidCode(true))
       .catch(() => setValidCode(false));
@@ -45,7 +43,7 @@ const AdminResetPasswordPage = () => {
     try {
       await confirmPasswordReset(auth, oobCode, newPassword);
       setSuccess(true);
-    } catch (err) {
+    } catch {
       setError("El enlace expiró o ya fue usado. Solicitá uno nuevo.");
     } finally {
       setLoading(false);

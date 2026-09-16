@@ -28,6 +28,9 @@ const normalize = (value) =>
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
 
+const requestProductData = () =>
+  Promise.all([fetchProducts(), fetchActiveBrands(), fetchActiveCategories()]);
+
 const ProductsAdmin = () => {
   const [products, setProducts] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -43,11 +46,7 @@ const ProductsAdmin = () => {
     setLoading(true);
     setError("");
     try {
-      const [productsData, brandsData, categoriesData] = await Promise.all([
-        fetchProducts(),
-        fetchActiveBrands(),
-        fetchActiveCategories(),
-      ]);
+      const [productsData, brandsData, categoriesData] = await requestProductData();
       setProducts(productsData);
       setBrands(brandsData);
       setCategories(categoriesData);
@@ -60,7 +59,26 @@ const ProductsAdmin = () => {
   };
 
   useEffect(() => {
-    loadData();
+    let cancelled = false;
+
+    requestProductData()
+      .then(([productsData, brandsData, categoriesData]) => {
+        if (cancelled) return;
+        setProducts(productsData);
+        setBrands(brandsData);
+        setCategories(categoriesData);
+      })
+      .catch((loadError) => {
+        console.error(loadError);
+        if (!cancelled) setError("No pudimos cargar los productos. Probá recargar la página.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const options = useMemo(

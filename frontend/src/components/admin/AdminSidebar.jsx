@@ -1,12 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { FiGrid, FiHome, FiPackage, FiTag, FiX } from "react-icons/fi";
+import { FiGrid, FiHome, FiPackage, FiTag, FiUsers, FiX } from "react-icons/fi";
 
 const SIDEBAR_ITEMS = [
   { label: "Inicio", icon: FiHome, path: "/admin/panel/inicio" },
   { label: "Productos", icon: FiPackage, path: "/admin/panel/productos" },
-  { label: "Categorías", icon: FiTag, path: null },
-  { label: "Marcas", icon: FiGrid, path: null },
+  { label: "Personal", icon: FiUsers, path: "/admin/panel/personal" },
+  { label: "Categorías", icon: FiTag, path: "/admin/panel/categorias" },
+  { label: "Marcas", icon: FiGrid, path: "/admin/panel/marcas" },
 ];
 
 const AdminSidebar = ({ isOpen, onClose, onUnavailable }) => {
@@ -44,7 +45,7 @@ const AdminSidebar = ({ isOpen, onClose, onUnavailable }) => {
                 onClick={() => {
                   onClose();
                   if (path) navigate(path);
-                  else onUnavailable(label);
+                  else onUnavailable?.(label);
                 }}
               >
                 <Icon aria-hidden="true" />

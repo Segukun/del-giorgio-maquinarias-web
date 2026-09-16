@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FiActivity,
   FiEye,
@@ -41,35 +41,36 @@ const DashboardAdmin = () => {
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null); // "topMachines" | "activity" | null
 
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      const [statsData, topProductsData, activityData, recentViewsData] = await Promise.all([
+  useEffect(() => {
+    let cancelled = false;
+
+    Promise.all([
         fetchDashboardStats(period),
         fetchTopProducts(5),
         fetchRecentActivity(5),
         fetchRecentProductViews(5),
-      ]);
+      ])
+      .then(([statsData, topProductsData, activityData, recentViewsData]) => {
+        if (cancelled) return;
+
       setStats(statsData);
       setTopProducts(topProductsData);
       setActivity(activityData);
       setRecentViews(recentViewsData);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
 
-  useEffect(() => {
-    loadData();
+    return () => {
+      cancelled = true;
+    };
   }, [period]);
 
-  const interactivityRate = useMemo(() => {
-    if (!stats?.current?.sessionsTotal) return 0;
-    // aproximación: sesiones con clicks de WhatsApp como proxy de interactividad
-    return Math.round((stats.current.whatsappClicksTotal / stats.current.sessionsTotal) * 100);
-  }, [stats]);
+  const interactivityRate = stats?.current?.sessionsTotal
+    ? Math.round((stats.current.whatsappClicksTotal / stats.current.sessionsTotal) * 100)
+    : 0;
 
   if (loading || !stats) {
     return (
@@ -201,14 +202,14 @@ const DashboardAdmin = () => {
           <button
             className="dg-button dg-button--secondary"
             type="button"
-            onClick={() => alert("La gestión de categorías está en desarrollo.")}
+            onClick={() => navigate("/admin/panel/categorias")}
           >
             <FiTag aria-hidden="true" /> Agregar categoría
           </button>
           <button
             className="dg-button dg-button--secondary"
             type="button"
-            onClick={() => alert("La gestión de marcas está en desarrollo.")}
+            onClick={() => navigate("/admin/panel/marcas")}
           >
             <FiPlus aria-hidden="true" /> Agregar marca
           </button>

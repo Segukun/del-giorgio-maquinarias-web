@@ -72,6 +72,8 @@ export const useVisitorTracking = () => {
       sessionStorage.setItem(SESSION_DATA_KEY, "true");
     };
 
-    trackSession();
+    trackSession().catch((error) => {
+      console.warn("No se pudo registrar la sesión:", error);
+    });
   }, []);
 };

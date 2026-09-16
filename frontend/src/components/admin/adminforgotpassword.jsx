@@ -18,12 +18,10 @@ const AdminForgotPassword = ({ onBack }) => {
     setError("");
     setLoading(true);
 
-     console.log("actionCodeSettings usado:", actionCodeSettings);
-
     try {
       await sendPasswordResetEmail(auth, email, actionCodeSettings);
       setSent(true);
-    } catch (err) {
+    } catch {
       // No revelamos si el email existe o no, por seguridad.
       // Si preferís ocultar completamente el error, cambiá esto por setSent(true).
       setError("No pudimos enviar el email. Verificá la dirección.");

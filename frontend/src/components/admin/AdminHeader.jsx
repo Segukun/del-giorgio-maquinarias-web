@@ -1,5 +1,5 @@
 import { FiMenu, FiX } from "react-icons/fi";
-import AdminProfileMenu from "./adminprofilemenu";
+import UserMenu from "./profile/UserMenu.jsx";
 
 const AdminHeader = ({ isMenuOpen, onMenuToggle }) => (
   <header className="dg-admin-header">
@@ -22,7 +22,7 @@ const AdminHeader = ({ isMenuOpen, onMenuToggle }) => (
       </div>
     </div>
 
-    <AdminProfileMenu />
+    <UserMenu />
   </header>
 );
 
