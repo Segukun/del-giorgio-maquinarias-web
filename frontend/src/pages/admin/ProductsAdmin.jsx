@@ -109,6 +109,11 @@ const ProductsAdmin = () => {
   const safePage = Math.min(currentPage, pageCount);
   const pageStart = (safePage - 1) * PAGE_SIZE;
   const visibleProducts = filteredProducts.slice(pageStart, pageStart + PAGE_SIZE);
+  const visibleProductsWithBrandImages = visibleProducts.map((product) => {
+    const brand = brands.find((item) => normalize(item.name) === normalize(product.brand ?? ""));
+    const brandLogo = typeof brand?.image === "string" ? brand.image : brand?.image?.url;
+    return { ...product, brandLogo: brandLogo ?? product.brandLogo };
+  });
 
   const handleFilterChange = (field, value) => {
     setFilters((current) => ({ ...current, [field]: value }));
@@ -236,7 +241,7 @@ const ProductsAdmin = () => {
           />
 
           <ProductTable
-            products={visibleProducts}
+            products={visibleProductsWithBrandImages}
             onToggleFeatured={handleToggleFeatured}
             onEdit={(product) => setModal({ type: "form", product })}
             onDelete={(product) => setModal({ type: "delete", product })}

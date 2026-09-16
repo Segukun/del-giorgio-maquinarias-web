@@ -228,6 +228,20 @@
   font-weight: 600;
 }
 
+.dg-catalog-admin__loading {
+  min-height: 180px;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  color: var(--dg-muted);
+}
+
+.dg-catalog-form__error {
+  margin: 0;
+  color: #a31622;
+  font-size: 0.82rem;
+}
+
 .dg-catalog-form {
   display: grid;
   gap: 1rem;

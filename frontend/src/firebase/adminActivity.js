@@ -28,5 +28,9 @@ export const ACTION_LABELS = {
   update_product: "editó la máquina",
   delete_product: "eliminó la máquina",
   create_brand: "agregó la marca",
+  update_brand: "editó la marca",
+  delete_brand: "eliminó la marca",
   create_category: "agregó la categoría",
+  update_category: "editó la categoría",
+  delete_category: "eliminó la categoría",
 };

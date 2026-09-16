@@ -785,6 +785,56 @@ body.dg-modal-open {
   box-shadow: 0 0 0 3px rgba(77, 105, 132, 0.1);
 }
 
+.dg-product-form label.dg-product-form__featured {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 64px;
+  padding: 0.8rem 0.95rem;
+  background: #f7f9fb;
+  border: 1px solid #dfe6ec;
+  border-radius: 0.55rem;
+  cursor: pointer;
+}
+
+.dg-product-form label.dg-product-form__featured:hover {
+  border-color: #bdcbd7;
+  background: #f2f6fa;
+}
+
+.dg-product-form label.dg-product-form__featured:focus-within {
+  border-color: #8298ae;
+  box-shadow: 0 0 0 3px rgba(77, 105, 132, 0.1);
+}
+
+.dg-product-form__featured input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  flex: 0 0 auto;
+  accent-color: var(--dg-red);
+  cursor: pointer;
+}
+
+.dg-product-form__featured-copy {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.dg-product-form__featured-copy strong {
+  color: #263f59;
+  font-size: 0.88rem;
+}
+
+.dg-product-form__featured-copy small {
+  color: #63768a;
+  font-size: 0.78rem;
+}
+
 .dg-product-detail {
   display: grid;
   grid-template-columns: minmax(300px, 1.12fr) minmax(280px, 0.88fr);

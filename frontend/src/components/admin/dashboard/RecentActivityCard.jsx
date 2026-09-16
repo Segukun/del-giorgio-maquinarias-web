@@ -6,7 +6,11 @@ const ICONS = {
   update_product: FiEdit2,
   delete_product: FiTrash2,
   create_brand: FiPlusCircle,
+  update_brand: FiEdit2,
+  delete_brand: FiTrash2,
   create_category: FiPlusCircle,
+  update_category: FiEdit2,
+  delete_category: FiTrash2,
 };
 
 const timeAgo = (date) => {

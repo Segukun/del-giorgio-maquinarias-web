@@ -181,13 +181,16 @@ const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
             />
           </label>
 
-          <label className="dg-product-form__checkbox">
+          <label className="dg-product-form__featured is-wide">
             <input
               type="checkbox"
               checked={Boolean(form.featured)}
               onChange={(event) => update("featured", event.target.checked)}
             />
-            <span>Destacar producto</span>
+            <span className="dg-product-form__featured-copy">
+              <strong>Destacar producto</strong>
+              <small>Activá esta opción para resaltarlo en el catálogo.</small>
+            </span>
           </label>
 
           <label className="is-wide">

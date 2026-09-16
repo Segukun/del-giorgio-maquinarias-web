@@ -1,13 +1,13 @@
 import { FiEdit3, FiImage, FiInbox, FiTrash2 } from "react-icons/fi";
 import ActiveStatusBadge from "../catalog/ActiveStatusBadge.jsx";
 
-const BrandsTable = ({ brands, onEdit, onDelete }) => {
+const BrandsTable = ({ brands, hasFilters, onEdit, onDelete }) => {
   if (!brands.length) {
     return (
       <div className="dg-catalog-empty">
         <FiInbox aria-hidden="true" />
-        <strong>No encontramos marcas</strong>
-        <span>Probá cambiando o limpiando los filtros.</span>
+        <strong>{hasFilters ? "No encontramos marcas" : "No hay marcas registradas"}</strong>
+        <span>{hasFilters ? "Probá cambiando o limpiando los filtros." : "Creá la primera marca desde el botón superior."}</span>
       </div>
     );
   }
@@ -28,7 +28,7 @@ const BrandsTable = ({ brands, onEdit, onDelete }) => {
             <tr key={brand.id}>
               <td data-label="Imagen">
                 <div className="dg-brand-thumbnail">
-                  {brand.image ? <img src={brand.image} alt="" /> : <FiImage aria-hidden="true" />}
+                  {brand.image ? <img src={brand.image.url ?? brand.image} alt="" /> : <FiImage aria-hidden="true" />}
                 </div>
               </td>
               <td data-label="Marca"><strong>{brand.name}</strong></td>

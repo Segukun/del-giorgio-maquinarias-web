@@ -1,13 +1,13 @@
 import { FiEdit3, FiInbox, FiTrash2 } from "react-icons/fi";
 import ActiveStatusBadge from "../catalog/ActiveStatusBadge.jsx";
 
-const CategoriesTable = ({ categories, onEdit, onDelete }) => {
+const CategoriesTable = ({ categories, hasFilters, onEdit, onDelete }) => {
   if (!categories.length) {
     return (
       <div className="dg-catalog-empty">
         <FiInbox aria-hidden="true" />
-        <strong>No encontramos categorías</strong>
-        <span>Probá cambiando o limpiando los filtros.</span>
+        <strong>{hasFilters ? "No encontramos categorías" : "No hay categorías registradas"}</strong>
+        <span>{hasFilters ? "Probá cambiando o limpiando los filtros." : "Creá la primera categoría desde el botón superior."}</span>
       </div>
     );
   }

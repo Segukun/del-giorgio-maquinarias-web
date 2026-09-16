@@ -1,26 +1,36 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FiCheckCircle, FiGrid, FiPlus, FiX } from "react-icons/fi";
 import AdminLayout from "../../components/admin/AdminLayout.jsx";
 import BrandFormModal from "../../components/admin/brands/BrandFormModal.jsx";
 import BrandsTable from "../../components/admin/brands/BrandsTable.jsx";
 import CatalogDeleteModal from "../../components/admin/catalog/CatalogDeleteModal.jsx";
 import CatalogToolbar from "../../components/admin/catalog/CatalogToolbar.jsx";
-import { MOCK_BRANDS } from "../../data/adminCatalogMocks.js";
+import { createBrand, deleteBrand, fetchBrands, updateBrand } from "../../firebase/brands.js";
 import normalizeSearch from "../../utils/normalizeSearch.js";
 import "../../styles/admin/layout.css";
 import "../../styles/admin/products.css";
 import "../../styles/admin/taxonomy.css";
 
-const revokeLocalImage = (url) => {
-  if (url?.startsWith("blob:")) URL.revokeObjectURL(url);
-};
-
 const BrandsAdmin = () => {
-  const [brands, setBrands] = useState(() => MOCK_BRANDS.map((item) => ({ ...item })));
+  const [brands, setBrands] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("");
   const [modal, setModal] = useState(null);
   const [notice, setNotice] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchBrands()
+      .then((data) => { if (!cancelled) setBrands(data); })
+      .catch((loadError) => {
+        console.error(loadError);
+        if (!cancelled) setError("No se pudieron cargar las marcas. Recargá la página para intentar de nuevo.");
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
 
   const filteredBrands = useMemo(() => {
     const normalizedQuery = normalizeSearch(query.trim());
@@ -28,30 +38,28 @@ const BrandsAdmin = () => {
       const matchesQuery = !normalizedQuery || normalizeSearch(brand.name).includes(normalizedQuery);
       const matchesStatus = !status || (status === "active" ? brand.isActive : !brand.isActive);
       return matchesQuery && matchesStatus;
-    });
+    }).sort((a, b) => a.name.localeCompare(b.name, "es"));
   }, [brands, query, status]);
 
-  const handleSave = (values, isEditing) => {
+  const handleSave = async (values, file, isEditing) => {
     if (isEditing) {
-      const previousImage = modal.item.image;
-      setBrands((current) =>
-        current.map((item) => (item.id === modal.item.id ? { ...item, ...values } : item)),
-      );
-      if (previousImage !== values.image) revokeLocalImage(previousImage);
-      setNotice(`${values.name} se actualizó temporalmente.`);
+      const updated = await updateBrand(modal.item.id, values, file);
+      setBrands((current) => current.map((item) => item.id === updated.id ? updated : item));
+      setNotice(`${values.name} se actualizó correctamente.`);
     } else {
-      setBrands((current) => [...current, { id: `brand-${Date.now()}`, ...values }]);
+      const created = await createBrand(values, file);
+      setBrands((current) => [...current, created]);
       setNotice(`${values.name} se agregó como marca.`);
     }
     setModal(null);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     const brand = brands.find((item) => item.id === id);
-    revokeLocalImage(brand?.image);
+    await deleteBrand(id);
     setBrands((current) => current.filter((item) => item.id !== id));
     setModal(null);
-    setNotice(`${brand?.name ?? "La marca"} se eliminó temporalmente.`);
+    setNotice(`${brand?.name ?? "La marca"} se eliminó correctamente.`);
   };
 
   return (
@@ -65,24 +73,24 @@ const BrandsAdmin = () => {
               <p>{brands.length} marcas registradas</p>
             </div>
           </div>
-
           <button className="dg-button dg-button--primary dg-products-admin__new" type="button" onClick={() => setModal({ type: "form", item: null })}>
-            <FiPlus aria-hidden="true" />
-            Nueva marca
+            <FiPlus aria-hidden="true" />Nueva marca
           </button>
         </div>
 
         {notice ? (
           <div className="dg-admin-notice" role="status">
-            <FiCheckCircle aria-hidden="true" />
-            <span>{notice}</span>
+            <FiCheckCircle aria-hidden="true" /><span>{notice}</span>
             <button type="button" aria-label="Cerrar aviso" onClick={() => setNotice("")}><FiX aria-hidden="true" /></button>
           </div>
         ) : null}
+        {error ? <div className="dg-admin-notice dg-admin-notice--error" role="alert">{error}</div> : null}
 
         <div className="dg-products-admin__panel">
           <CatalogToolbar query={query} status={status} searchPlaceholder="Buscar marca..." onQueryChange={setQuery} onStatusChange={setStatus} />
-          <BrandsTable brands={filteredBrands} onEdit={(item) => setModal({ type: "form", item })} onDelete={(item) => setModal({ type: "delete", item })} />
+          {loading ? <p className="dg-catalog-admin__loading" role="status">Cargando marcas...</p> : error ? null : (
+            <BrandsTable brands={filteredBrands} hasFilters={Boolean(query || status)} onEdit={(item) => setModal({ type: "form", item })} onDelete={(item) => setModal({ type: "delete", item })} />
+          )}
           <footer className="dg-catalog-admin__footer" aria-live="polite">
             {filteredBrands.length === brands.length
               ? `${brands.length} marcas registradas`
