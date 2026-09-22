@@ -32,7 +32,14 @@ const StaffFormModal = ({ user, users, onClose, onSubmit }) => {
       return;
     }
 
-    onSubmit({ name: values.name, email: values.email }, isEditing);
+    onSubmit(
+      {
+        name: values.name,
+        email: values.email,
+        password: values.password || undefined, // vacío al editar = no cambiar contraseña
+      },
+      isEditing,
+    );
   };
 
   return (
@@ -78,6 +85,7 @@ const StaffFormModal = ({ user, users, onClose, onSubmit }) => {
             <span>{isEditing ? "Nueva contraseña" : "Contraseña"}</span>
             <input
               type="password"
+              minLength={6}
               value={values.password}
               onChange={(event) => update("password", event.target.value)}
               aria-invalid={Boolean(errors.password)}
@@ -92,6 +100,7 @@ const StaffFormModal = ({ user, users, onClose, onSubmit }) => {
             <span>{isEditing ? "Confirmar nueva contraseña" : "Confirmar contraseña"}</span>
             <input
               type="password"
+              minLength={6}
               value={values.confirmPassword}
               onChange={(event) => update("confirmPassword", event.target.value)}
               aria-invalid={Boolean(errors.confirmPassword)}

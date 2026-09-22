@@ -32,7 +32,7 @@ const getLocation = async () => {
     const data = await response.json();
     return {
       city: data.city ?? null,
-      province: data.region ?? null, // ipapi.co usa "region" para provincia/estado
+      province: data.region ?? null,
     };
   } catch {
     return { city: null, province: null };
@@ -50,8 +50,11 @@ export const getOrCreateSessionId = () => {
 
 export const useVisitorTracking = () => {
   useEffect(() => {
+    // No trackeamos navegación dentro del panel de administración
+    if (window.location.pathname.startsWith("/admin")) return;
+
     const alreadyTracked = sessionStorage.getItem(SESSION_DATA_KEY);
-    if (alreadyTracked) return; // Ya se registró esta sesión, no duplicar
+    if (alreadyTracked) return;
 
     const trackSession = async () => {
       const sessionId = getOrCreateSessionId();
@@ -72,8 +75,6 @@ export const useVisitorTracking = () => {
       sessionStorage.setItem(SESSION_DATA_KEY, "true");
     };
 
-    trackSession().catch((error) => {
-      console.warn("No se pudo registrar la sesión:", error);
-    });
+    trackSession();
   }, []);
 };

@@ -85,7 +85,7 @@ const ProductsAdmin = () => {
     () => ({
       categories: categories.map((category) => category.name),
       brands: brands.map((brand) => brand.name),
-      statuses: ["Publicado", "Borrador", "Pendiente"],
+      statuses: ["Publicado", "Pendiente"],
     }),
     [categories, brands],
   );
@@ -156,14 +156,14 @@ const ProductsAdmin = () => {
     }
   };
 
-  const handleFormSubmit = async (form, files, isEditing) => {
+  const handleFormSubmit = async (formData, imageItems, isEditing) => {
     try {
-      if (isEditing) {
-        await updateProduct(form.id, form, files, form.images ?? []);
-        showNotice(`${form.name} se actualizó correctamente.`);
+      if (isEditing && modal?.product?.id) {
+        await updateProduct(modal.product.id, formData, imageItems);
+        showNotice(`${formData.name} se actualizó correctamente.`);
       } else {
-        await createProduct(form, files);
-        showNotice(`${form.name} se creó correctamente.`);
+        await createProduct(formData, imageItems);
+        showNotice(`${formData.name} se creó correctamente.`);
       }
       setModal(null);
       await loadData();

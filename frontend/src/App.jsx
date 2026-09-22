@@ -11,6 +11,8 @@ import BrandsAdmin from "./pages/admin/BrandsAdmin.jsx";
 
 import { useVisitorTracking } from "./hooks/useVisitorTracking.js";
 
+import { AdminSessionProvider } from "./context/AdminSessionProvider.jsx"
+
 {/* <Route path="/" element={<Home />} />
         <Route path="/catalog" element={<Catalog />} />
          */}
@@ -21,6 +23,7 @@ const App = () => {
 
   return (
     <Router>
+      <AdminSessionProvider>
       <Routes>
         <Route path="/" element={<Navigate to="/admin/login" replace />} />
         <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
@@ -85,6 +88,7 @@ const App = () => {
         <Route path="/admin/categorias" element={<Navigate to="/admin/panel/categorias" replace />} />
         <Route path="/admin/marcas" element={<Navigate to="/admin/panel/marcas" replace />} />
       </Routes>
+      </AdminSessionProvider>
     </Router>
   )
 }

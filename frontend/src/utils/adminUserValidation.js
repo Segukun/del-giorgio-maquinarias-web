@@ -1,4 +1,5 @@
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MIN_PASSWORD_LENGTH = 6;
 
 export const validateAdminUserForm = (values, { passwordRequired = false } = {}) => {
   const errors = {};
@@ -13,6 +14,8 @@ export const validateAdminUserForm = (values, { passwordRequired = false } = {})
 
   if (passwordRequired && !values.password) {
     errors.password = "Ingresá una contraseña.";
+  } else if (values.password && values.password.length < MIN_PASSWORD_LENGTH) {
+    errors.password = `La contraseña debe tener al menos ${MIN_PASSWORD_LENGTH} caracteres.`;
   }
 
   if ((values.password || values.confirmPassword) && values.password !== values.confirmPassword) {

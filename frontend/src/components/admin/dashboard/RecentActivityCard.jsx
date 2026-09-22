@@ -46,8 +46,8 @@ const RecentActivityCard = ({ activity, onViewMore }) => (
                 <Icon />
               </span>
               <span className="dg-activity-list__text">
-                <strong>{item.userEmail}</strong> {ACTION_LABELS[item.action] ?? "realizó una acción en"}{" "}
-                {item.targetName}
+                <strong>{item.userName ?? item.userEmail}</strong>{" "}
+                {ACTION_LABELS[item.action] ?? "realizó una acción en"} {item.targetName}
               </span>
               <span className="dg-activity-list__time">{timeAgo(item.createdAt?.toDate?.())}</span>
             </li>

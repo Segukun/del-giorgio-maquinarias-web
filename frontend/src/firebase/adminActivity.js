@@ -1,13 +1,27 @@
-import { collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, doc, getDoc, getDocs, query, orderBy, limit, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "./config";
 
 const ADMIN_ACTIVITY_COLLECTION = "adminActivity";
 
 export const logAdminActivity = async (action, targetName) => {
   const user = auth.currentUser;
+  let userName = user?.email ?? "Desconocido";
+
+  if (user) {
+    try {
+      const profileSnap = await getDoc(doc(db, "users", user.uid));
+      if (profileSnap.exists() && profileSnap.data().name) {
+        userName = profileSnap.data().name;
+      }
+    } catch (err) {
+      console.warn("No se pudo obtener el nombre del usuario para el log de actividad:", err);
+    }
+  }
+
   await addDoc(collection(db, ADMIN_ACTIVITY_COLLECTION), {
     userEmail: user?.email ?? "Desconocido",
-    action, // "create_product" | "update_product" | "delete_product" | "create_brand" | "create_category"
+    userName,
+    action,
     targetName,
     createdAt: serverTimestamp(),
   });

@@ -1,6 +1,3 @@
-
-import { logAdminActivity } from "./adminActivity";
-
 import {
   collection,
   doc,
@@ -17,6 +14,7 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { db, storage } from "./config";
+import { logAdminActivity } from "./adminActivity";
 
 const PRODUCTS_COLLECTION = "products";
 const BRANDS_COLLECTION = "brands";
@@ -68,16 +66,38 @@ export const deleteProductImage = async (path) => {
   try {
     await deleteObject(ref(storage, path));
   } catch (err) {
-    // Si ya no existe en Storage, no rompemos el flujo de borrado del producto
     console.warn("No se pudo borrar la imagen de Storage:", err);
   }
+};
+
+/**
+ * Recibe una lista ordenada de items de imagen (mezcla de existentes y nuevas)
+ * y devuelve el array final de URLs, respetando el orden dado.
+ *
+ * imageItems: [{ id, kind: "existing", url } | { id, kind: "new", file }]
+ */
+export const buildOrderedImages = async (imageItems, productId) => {
+  const newItems = imageItems.filter((item) => item.kind === "new");
+
+  let uploadedMap = {};
+  if (newItems.length) {
+    const uploads = await uploadProductImages(
+      newItems.map((item) => item.file),
+      productId,
+    );
+    newItems.forEach((item, index) => {
+      uploadedMap[item.id] = uploads[index].url;
+    });
+  }
+
+  return imageItems.map((item) => (item.kind === "existing" ? item.url : uploadedMap[item.id]));
 };
 
 /* =========================================================
    ESCRITURA
 ========================================================= */
 
-export const createProduct = async (data, files) => {
+export const createProduct = async (data, imageItems) => {
   const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), {
     ...data,
     images: [],
@@ -85,23 +105,16 @@ export const createProduct = async (data, files) => {
     updatedAt: serverTimestamp(),
   });
 
-  if (files?.length) {
-    const uploaded = await uploadProductImages(files, docRef.id);
-    await updateDoc(docRef, { images: uploaded.map((img) => img.url) });
-  }
+  const images = await buildOrderedImages(imageItems, docRef.id);
+  await updateDoc(docRef, { images });
 
   await logAdminActivity("create_product", data.name);
 
   return docRef.id;
 };
 
-export const updateProduct = async (productId, data, newFiles, existingImages) => {
-  let images = existingImages ?? [];
-
-  if (newFiles?.length) {
-    const uploaded = await uploadProductImages(newFiles, productId);
-    images = [...images, ...uploaded.map((img) => img.url)];
-  }
+export const updateProduct = async (productId, data, imageItems) => {
+  const images = await buildOrderedImages(imageItems, productId);
 
   await updateDoc(doc(db, PRODUCTS_COLLECTION, productId), {
     ...data,
@@ -112,12 +125,9 @@ export const updateProduct = async (productId, data, newFiles, existingImages) =
   await logAdminActivity("update_product", data.name);
 };
 
-export const deleteProduct = async (productId) => {
+export const deleteProduct = async (productId, productName) => {
   await deleteDoc(doc(db, PRODUCTS_COLLECTION, productId));
-  // Nota: esto borra el documento de Firestore. Las imágenes en Storage bajo
-  // products/{productId}/ quedan huérfanas :(
-
-  await logAdminActivity("delete_product", productId);
+  await logAdminActivity("delete_product", productName);
 };
 
 export const toggleProductFeatured = async (productId, featured) => {

@@ -31,27 +31,28 @@ const StaffAdmin = () => {
     );
   }, [query, users]);
 
-  const handleSave = (form, isEditing) => {
+  const handleSave = async (form, isEditing) => {
     const succeeded = isEditing
-      ? updateStaff(modal.user.id, form)
-      : createStaff(form);
+      ? await updateStaff(modal.user.id, form)
+      : await createStaff(form);
 
     if (!succeeded) return;
 
     setModal(null);
     setNotice(
       isEditing
-        ? `${form.name} se actualizó temporalmente.`
+        ? `${form.name} se actualizó correctamente.`
         : `${form.name} se agregó como personal.`,
     );
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     const user = users.find((item) => item.id === id);
-    if (!deleteStaff(id)) return;
+    const succeeded = await deleteStaff(id);
+    if (!succeeded) return;
 
     setModal(null);
-    setNotice(`${user?.name ?? "La cuenta"} se eliminó temporalmente.`);
+    setNotice(`${user?.name ?? "La cuenta"} se eliminó correctamente.`);
   };
 
   return (

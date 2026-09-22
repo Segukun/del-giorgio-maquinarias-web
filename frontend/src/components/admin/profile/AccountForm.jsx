@@ -10,18 +10,18 @@ const AccountForm = ({ user, users, onSubmit }) => {
     confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
 
   const update = (field, value) => {
     setValues((current) => ({ ...current, [field]: value }));
     setErrors((current) => ({ ...current, [field]: "" }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const nextErrors = validateAdminUserForm(values);
     const emailAlreadyExists = users.some(
-      (item) =>
-        item.id !== user.id && item.email.toLowerCase() === values.email.trim().toLowerCase(),
+      (item) => item.id !== user.uid && item.email.toLowerCase() === values.email.trim().toLowerCase(),
     );
 
     if (emailAlreadyExists) nextErrors.email = "Ya existe una cuenta con este email.";
@@ -31,8 +31,17 @@ const AccountForm = ({ user, users, onSubmit }) => {
       return;
     }
 
-    onSubmit({ name: values.name, email: values.email });
-    setValues((current) => ({ ...current, password: "", confirmPassword: "" }));
+    setSaving(true);
+    try {
+      await onSubmit({
+        name: values.name,
+        email: values.email,
+        password: values.password || undefined, // vacío = no cambiar contraseña
+      });
+      setValues((current) => ({ ...current, password: "", confirmPassword: "" }));
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -73,10 +82,14 @@ const AccountForm = ({ user, users, onSubmit }) => {
             value={values.email}
             onChange={(event) => update("email", event.target.value)}
             aria-invalid={Boolean(errors.email)}
-            aria-describedby={errors.email ? "account-email-error" : undefined}
+            aria-describedby={errors.email ? "account-email-error" : "account-email-hint"}
             autoComplete="email"
           />
-          {errors.email ? <small id="account-email-error">{errors.email}</small> : null}
+          {errors.email ? (
+            <small id="account-email-error">{errors.email}</small>
+          ) : (
+            <em id="account-email-hint">Este es tu email actual. Modificalo solo si querés cambiarlo.</em>
+          )}
         </label>
 
         <label>
@@ -85,9 +98,15 @@ const AccountForm = ({ user, users, onSubmit }) => {
             type="password"
             value={values.password}
             onChange={(event) => update("password", event.target.value)}
+            aria-invalid={Boolean(errors.password)}
+            aria-describedby={errors.password ? "account-password-error" : undefined}
             autoComplete="new-password"
           />
-          <em>Dejar vacío para mantener la contraseña actual.</em>
+          {errors.password ? (
+            <small id="account-password-error">{errors.password}</small>
+          ) : (
+            <em>Dejar vacío para mantener la contraseña actual.</em>
+          )}
         </label>
 
         <label>
@@ -108,8 +127,8 @@ const AccountForm = ({ user, users, onSubmit }) => {
 
       <div className="dg-account-form__footer">
         <p>El tipo de cuenta no puede modificarse desde Mi cuenta.</p>
-        <button className="dg-button dg-button--primary" type="submit">
-          Guardar cambios
+        <button className="dg-button dg-button--primary" type="submit" disabled={saving}>
+          {saving ? "Guardando..." : "Guardar cambios"}
         </button>
       </div>
     </form>

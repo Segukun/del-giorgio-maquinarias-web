@@ -13,9 +13,10 @@ const AccountAdmin = () => {
 
   if (!currentUser) return null;
 
-  const handleSave = (form) => {
-    if (!updateCurrentUser(form)) return;
-    setNotice("Tu cuenta se actualizó temporalmente.");
+  const handleSave = async (form) => {
+    const succeeded = await updateCurrentUser(form);
+    if (!succeeded) return;
+    setNotice("Tu cuenta se actualizó correctamente.");
   };
 
   return (

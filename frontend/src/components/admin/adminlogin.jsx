@@ -24,11 +24,13 @@ const AdminLogin = ({ onForgotPassword }) => {
         err.code === "auth/wrong-password" ||
         err.code === "auth/user-not-found"
       ) {
-        setError("Email o contraseña incorrectos.");
-      } else if (err.code === "auth/too-many-requests") {
-        setError("Demasiados intentos. Probá de nuevo más tarde.");
-      } else {
-        setError("Ocurrió un error al iniciar sesión.");
+          setError("Email o contraseña incorrectos.");
+        } else if (err.code === "auth/user-disabled") {
+          setError("Esta cuenta está desactivada. Contactá al propietario.");
+        } else if (err.code === "auth/too-many-requests") {
+          setError("Demasiados intentos. Probá de nuevo más tarde.");
+        } else {
+          setError("Ocurrió un error al iniciar sesión.");
       }
     } finally {
       setLoading(false);

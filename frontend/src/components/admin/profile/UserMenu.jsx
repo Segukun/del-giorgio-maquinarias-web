@@ -29,7 +29,7 @@ const UserMenu = () => {
     };
   }, [open]);
 
-  const firstName = currentUser?.name.split(" ")[0] ?? "Usuario";
+  const firstName = currentUser?.name?.split(" ")[0] ?? "Usuario";
 
   const openAccount = () => {
     setOpen(false);
