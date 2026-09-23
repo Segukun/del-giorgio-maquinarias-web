@@ -1,0 +1,202 @@
+.dg-quickfilters {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ---- Nuevos / Usados ---- */
+
+.dg-quickfilters__conditions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.dg-condition-card {
+  position: relative;
+  min-height: 130px;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  color: #fff;
+  text-decoration: none;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dg-condition-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.dg-condition-card:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.dg-condition-card__overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.dg-condition-card--blue .dg-condition-card__overlay {
+  background: linear-gradient(100deg, rgba(19, 45, 92, 0.92) 30%, rgba(19, 45, 92, 0.35) 100%);
+}
+
+.dg-condition-card--red .dg-condition-card__overlay {
+  background: linear-gradient(100deg, rgba(161, 31, 43, 0.92) 30%, rgba(161, 31, 43, 0.35) 100%);
+}
+
+.dg-condition-card__text {
+  position: relative;
+  z-index: 1;
+}
+
+.dg-condition-card__text h3 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.dg-condition-card__text p {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.dg-condition-card__arrow {
+  position: relative;
+  z-index: 1;
+  margin-left: auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.dg-condition-card:hover .dg-condition-card__arrow {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(3px);
+}
+
+/* ---- Categorías ---- */
+
+.dg-quickfilters__categories {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.dg-category-card {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  min-height: 190px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dg-category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.2);
+}
+
+.dg-category-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.75) 100%);
+}
+
+.dg-category-card__main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.1rem 0.5rem;
+  color: #fff;
+  text-decoration: none;
+}
+
+.dg-category-card__icon {
+  width: 26px;
+  height: 26px;
+  filter: brightness(0) invert(1);
+  transition: transform 0.2s ease;
+}
+
+.dg-category-card__main:hover .dg-category-card__icon {
+  transform: scale(1.15) rotate(-4deg);
+}
+
+.dg-category-card__main h4 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.dg-category-card__subfilters {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0 1.1rem 1.1rem;
+}
+
+.dg-chip {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(3px);
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.dg-chip:hover,
+.dg-chip:focus-visible {
+  background: #fff;
+  color: #1a1a1a;
+  transform: scale(1.08);
+}
+
+.dg-chip:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 900px) {
+  .dg-quickfilters__categories {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .dg-quickfilters__conditions {
+    grid-template-columns: 1fr;
+  }
+  .dg-quickfilters__categories {
+    grid-template-columns: 1fr;
+  }
+  .dg-condition-card__text h3 {
+    font-size: 1.3rem;
+  }
+}
