@@ -1,0 +1,19 @@
+.dg-catalog-layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 3rem;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1.75rem;
+  align-items: flex-start;
+}
+
+.dg-catalog-results {
+  min-width: 0;
+}
+
+@media (max-width: 960px) {
+  .dg-catalog-layout {
+    grid-template-columns: 1fr;
+  }
+}

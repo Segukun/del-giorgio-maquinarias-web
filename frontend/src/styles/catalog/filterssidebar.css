@@ -1,0 +1,233 @@
+.dg-sidebar {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  padding: 1.25rem;
+  position: sticky;
+  top: 90px;
+  align-self: flex-start;
+}
+
+.dg-sidebar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.1rem;
+}
+
+.dg-sidebar__header h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.dg-sidebar__reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  color: #a11f2b;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.dg-sidebar__reset:hover {
+  opacity: 0.7;
+}
+
+.dg-sidebar__field {
+  margin-bottom: 1rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dg-sidebar__field:last-of-type {
+  border-bottom: none;
+}
+
+.dg-sidebar__field > label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.dg-sidebar__field select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.85rem;
+  color: #333;
+  background: #fafafa;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.dg-sidebar__field select:hover,
+.dg-sidebar__field select:focus {
+  border-color: #a11f2b;
+  outline: none;
+}
+
+.dg-sidebar__checkboxes {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.dg-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.dg-checkbox input {
+  width: 16px;
+  height: 16px;
+  accent-color: #a11f2b;
+  cursor: pointer;
+}
+
+.dg-dualrange {
+  position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.dg-dualrange__track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 999px;
+  background: #e6e6e6;
+}
+
+.dg-dualrange__fill {
+  position: absolute;
+  height: 4px;
+  border-radius: 999px;
+  background: #a11f2b;
+}
+
+.dg-dualrange__input {
+  position: absolute;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+  margin: 0;
+}
+
+.dg-dualrange__input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2.5px solid #a11f2b;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.dg-dualrange__input::-moz-range-thumb {
+  pointer-events: auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2.5px solid #a11f2b;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.dg-dualrange__inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 3rem;
+}
+
+.dg-dualrange__sep {
+  color: #bbb;
+  font-size: 0.8rem;
+}
+
+.dg-dualrange__inputbox {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.3rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  background: #fafafa;
+  transition: border-color 0.2s ease;
+}
+
+.dg-dualrange__inputbox:focus-within {
+  border-color: #a11f2b;
+}
+
+.dg-dualrange__inputbox input[type="number"] {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #333;
+  outline: none;
+  appearance: textfield;
+}
+
+.dg-dualrange__inputbox input[type="number"]::-webkit-outer-spin-button,
+.dg-dualrange__inputbox input[type="number"]::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.dg-dualrange__inputbox span {
+  font-size: 0.75rem;
+  color: #999;
+  flex: 0 0 auto;
+}
+
+.dg-sidebar__apply {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 999px;
+  border: none;
+  background: #a11f2b;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.dg-sidebar__apply:hover {
+  background: #7f1721;
+  transform: translateY(-1px);
+}
+
+.dg-sidebar__apply:active {
+  transform: translateY(0) scale(0.98);
+}
+
+@media (max-width: 960px) {
+  .dg-sidebar {
+    display: none;
+  }
+}

@@ -108,11 +108,17 @@ const FeaturedProducts = () => {
       {(hasMore || isExpanded) && (
         <div className="dg-featured__footer">
           {hasMore ? (
-            <button className="dg-btn dg-btn--outline-dark" onClick={showMore}>
+            <button
+              className="dg-btn dg-btn--outline-dark"
+              onClick={showMore}
+            >
               Ver más destacadas
             </button>
           ) : (
-            <button className="dg-btn dg-btn--outline-dark" onClick={showLess}>
+            <button
+              className="dg-btn dg-btn--outline-dark"
+              onClick={showLess}
+            >
               Ver menos
             </button>
           )}
@@ -120,6 +126,7 @@ const FeaturedProducts = () => {
       )}
     </section>
   );
+};
 };
 
 export default FeaturedProducts;

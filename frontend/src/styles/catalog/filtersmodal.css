@@ -1,0 +1,196 @@
+.dg-filtermodal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+}
+
+.dg-filtermodal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  animation: dg-fade-in 0.25s ease;
+}
+
+.dg-filtermodal__sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 85vh;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  animation: dg-slide-up 0.3s ease;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.dg-filtermodal__handle {
+  width: 40px;
+  height: 4px;
+  border-radius: 999px;
+  background: #ddd;
+  margin: 0.7rem auto 0.3rem;
+}
+
+.dg-filtermodal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #eee;
+}
+
+.dg-filtermodal__header h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.dg-filtermodal__clear {
+  background: none;
+  border: none;
+  color: #a11f2b;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.dg-filtermodal__body {
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  flex: 1;
+}
+
+.dg-filtermodal__field {
+  margin-bottom: 1.25rem;
+}
+
+.dg-filtermodal__field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.dg-filtermodal__field select,
+.dg-accordion select {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.88rem;
+  background: #fafafa;
+}
+
+.dg-filtermodal__range-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dg-filtermodal__range-inline input {
+  width: 70px;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.85rem;
+}
+
+.dg-filtermodal__range-inline span {
+  font-size: 0.82rem;
+  color: #666;
+}
+
+.dg-accordion {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dg-accordion__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  padding: 0.9rem 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  cursor: pointer;
+}
+
+.dg-accordion__chevron {
+  transition: transform 0.25s ease;
+}
+
+.dg-accordion.is-open .dg-accordion__chevron {
+  transform: rotate(90deg);
+}
+
+.dg-accordion__content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.dg-accordion.is-open .dg-accordion__content {
+  grid-template-rows: 1fr;
+}
+
+.dg-accordion__inner {
+  overflow: hidden;
+}
+
+.dg-accordion.is-open .dg-accordion__inner {
+  padding-bottom: 0.9rem;
+}
+
+.dg-filtermodal__footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid #eee;
+}
+
+.dg-filtermodal__apply {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: 999px;
+  border: none;
+  background: #a11f2b;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.dg-filtermodal__apply:hover {
+  background: #7f1721;
+}
+
+@keyframes dg-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dg-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 960px) {
+  .dg-filtermodal {
+    display: block;
+  }
+}

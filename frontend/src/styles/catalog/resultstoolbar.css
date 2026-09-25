@@ -1,0 +1,101 @@
+.dg-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.dg-toolbar__info h2 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.dg-toolbar__info h2 span {
+  color: #a11f2b;
+}
+
+.dg-toolbar__info p {
+  font-size: 0.82rem;
+  color: #888;
+  margin-top: 0.2rem;
+}
+
+.dg-toolbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dg-toolbar__filters-btn {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #333;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.2s ease;
+}
+
+.dg-toolbar__filters-btn:hover {
+  border-color: #a11f2b;
+}
+
+.dg-toolbar__filters-count {
+  background: #a11f2b;
+  color: #fff;
+  font-size: 0.68rem;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dg-toolbar__sort {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+}
+
+.dg-toolbar__sort select {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.dg-toolbar__sort-label-full {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+}
+
+@media (max-width: 960px) {
+  .dg-toolbar__filters-btn {
+    display: inline-flex;
+  }
+
+  .dg-toolbar__sort-label-full {
+    display: none;
+  }
+
+  .dg-toolbar__sort {
+    padding: 0.55rem 0.7rem;
+  }
+}
