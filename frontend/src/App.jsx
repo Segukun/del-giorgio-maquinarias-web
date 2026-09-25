@@ -8,15 +8,14 @@ import StaffAdmin from "./pages/admin/StaffAdmin.jsx";
 import AccountAdmin from "./pages/admin/AccountAdmin.jsx";
 import CategoriesAdmin from "./pages/admin/CategoriesAdmin.jsx";
 import BrandsAdmin from "./pages/admin/BrandsAdmin.jsx";
+
 import Home from "./pages/home.jsx"
+import ProductDetail from "./pages/ProductDetail.jsx";
+import PublicLayout from "./components/layout/PublicLayout.jsx";
 
 import { useVisitorTracking } from "./hooks/useVisitorTracking.js";
 
 import { AdminSessionProvider } from "./context/AdminSessionProvider.jsx"
-
-{/* <Route path="/" element={<Home />} />
-        <Route path="/catalog" element={<Catalog />} />
-         */}
 
 const App = () => {
 
@@ -27,8 +26,9 @@ const App = () => {
       <AdminSessionProvider>
       <Routes>
 
-        <Route path="/" element={ <Home />} />
-        
+        <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+
+        <Route path="/maquinaria/:id" element={<PublicLayout><ProductDetail /></PublicLayout>} />
 
         <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
         <Route path="/admin/login" element={<AdminLoginPage />} />

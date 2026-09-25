@@ -11,7 +11,7 @@ const DeleteStaffModal = ({ user, onClose, onConfirm }) => (
         <p>
           ¿Eliminar la cuenta de <strong>{user.name}</strong>?
         </p>
-        <span>La cuenta se quitará únicamente del estado local y volverá al recargar.</span>
+        <span>Esta accion no podra revertirse.</span>
       </div>
     </div>
 

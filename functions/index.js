@@ -30,7 +30,9 @@ exports.onSessionCreated = onDocumentCreated("sessions/{sessionId}", async (even
       newSessionsTotal: FieldValue.increment(1),
       [sourceField]: FieldValue.increment(1),
       [deviceField]: FieldValue.increment(1),
-      [`locations.${locationKey}`]: FieldValue.increment(1),
+      locations: {
+        [locationKey]: FieldValue.increment(1), // objeto anidado, no string con punto
+      },
     },
     { merge: true },
   );

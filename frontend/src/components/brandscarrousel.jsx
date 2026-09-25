@@ -1,20 +1,37 @@
+import { useEffect, useState } from "react";
+import { fetchBrands } from "../firebase/brands.js";
 import "../styles/brandscarrousel.css";
 
-const BRANDS = [
-  { name: "Case IH", logo: "/brand/case-ih.png" },
-  { name: "New Holland", logo: "/brand/new-holland.png" },
-  { name: "John Deere", logo: "/brand/john-deere.png" },
-  { name: "AGCO", logo: "/brand/agco.png" },
-  { name: "Claas", logo: "/brand/claas.png" },
-  { name: "Kuhn", logo: "/brand/kuhn.png" },
-  { name: "Metalfor", logo: "/brand/metalfor.png" },
-  { name: "Jacto", logo: "/brand/jacto.png" },
-];
-
-// Se duplica la lista para lograr un loop continuo sin cortes.
-const LOOP_BRANDS = [...BRANDS, ...BRANDS];
-
 const BrandsCarrousel = () => {
+  const [brands, setBrands] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadBrands = async () => {
+      try {
+        const data = await fetchBrands();
+        if (!isMounted) return;
+        setBrands(data.filter((brand) => brand.isActive));
+      } catch (error) {
+        console.error("No se pudieron cargar las marcas:", error);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    loadBrands();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (loading || !brands.length) return null;
+
+  // Se duplica la lista para lograr un loop continuo sin cortes.
+  const loopBrands = [...brands, ...brands];
+
   return (
     <section className="dg-brands">
       <div className="dg-brands__header">
@@ -23,15 +40,15 @@ const BrandsCarrousel = () => {
 
       <div className="dg-brands__track-wrapper">
         <div className="dg-brands__track">
-          {LOOP_BRANDS.map((brand, i) => (
-            <div className="dg-brands__item" key={`${brand.name}-${i}`}>
-              <img src={brand.logo} alt={brand.name} loading="lazy" />
+          {loopBrands.map((brand, i) => (
+            <div className="dg-brands__item" key={`${brand.id}-${i}`}>
+              <img src={brand.image?.url ?? brand.image} alt={brand.name} loading="lazy" />
             </div>
           ))}
         </div>
       </div>
     </section>
   );
-}
+};
 
 export default BrandsCarrousel;

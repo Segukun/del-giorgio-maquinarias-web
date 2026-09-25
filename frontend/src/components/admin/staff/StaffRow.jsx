@@ -45,7 +45,7 @@ const StaffRow = ({ user, canManage, onEdit, onDelete }) => (
         ) : (
           <span className="dg-staff-row__protected" title="La cuenta propia se modifica desde Mi cuenta">
             <FiLock aria-hidden="true" />
-            Mi cuenta
+            Cuenta protegida
           </span>
         )}
       </td>
