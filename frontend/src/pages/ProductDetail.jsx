@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { whatsappUrl } from "../config/contact.js";
+import { useParams, useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/config.js";
 import { trackProductView, trackWhatsappClick } from "../firebase/tracking.js";
 import "../styles/productdetail.css";
-
-const WHATSAPP_NUMBER = "542281301249";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -88,9 +87,7 @@ const ProductDetail = () => {
     ...(product.extraFields ?? []).map((field) => ({ label: field.label, value: field.value })),
   ].filter((spec) => spec.value);
 
-  const whatsappHref =
-    `https://wa.me/${WHATSAPP_NUMBER}?text=` +
-    encodeURIComponent(`Hola, quisiera consultar por ${product.name}.`);
+  const whatsappHref = whatsappUrl(`Hola, quisiera consultar por ${product.name}.`);
 
   return (
     <div className="dg-pd">

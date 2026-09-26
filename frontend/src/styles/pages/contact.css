@@ -1,0 +1,63 @@
+.dg-contact { background: var(--dg-canvas); }
+.dg-contact__container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+.dg-contact__hero {
+  padding: 4rem 0 4.5rem;
+  color: white;
+  background: linear-gradient(90deg, rgba(18,33,49,.94), rgba(18,33,49,.55)), url('/hero-combine.jpg') center 55% / cover;
+}
+.dg-contact__eyebrow { display: block; font-size: .72rem; letter-spacing: .18em; font-weight: 800; color: var(--dg-red); }
+.dg-contact__hero .dg-contact__eyebrow { color: #fff; }
+.dg-contact__hero h1 { margin: .8rem 0 1rem; font-size: clamp(2rem, 4vw, 3.3rem); line-height: 1.1; letter-spacing: -.035em; }
+.dg-contact__hero p { max-width: 670px; margin: 0; color: #f0f2f5; font-size: 1.1rem; line-height: 1.7; }
+.dg-contact__content { padding-top: 2rem; padding-bottom: 4rem; }
+.dg-contact__channels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.dg-contact__card { display: flex; gap: 1rem; align-items: center; padding: 1.5rem; border: 1px solid var(--dg-line); background: white; border-radius: 16px; text-decoration: none; transition: border-color .2s, box-shadow .2s; }
+.dg-contact__card:hover { border-color: var(--dg-red); box-shadow: 0 6px 20px #1221310c; }
+.dg-contact__card > span:nth-child(2) { min-width: 0; }
+.dg-contact__card strong { display: block; font-size: .98rem; overflow-wrap: anywhere; line-height: 1.5; }
+.dg-contact__card-label { display: block; font-size: .8rem; margin-bottom: .3rem; color: var(--dg-text); }
+.dg-contact__card-note { display: block; font-size: .78rem; color: var(--dg-text); margin-top: .4rem; }
+.dg-contact__icon { display: grid; place-items: center; flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%; background: #9d10190d; color: var(--dg-red); font-size: 1.3rem; }
+.dg-contact__card--whatsapp { background: var(--dg-navy); color: white; border-color: var(--dg-navy); }
+.dg-contact__card--whatsapp .dg-contact__icon { background: #ffffff16; color: white; }
+.dg-contact__card--whatsapp .dg-contact__card-label, .dg-contact__card--whatsapp .dg-contact__card-note { color: #dae3ed; }
+.dg-contact__card--whatsapp strong { font-size: 1.2rem; }
+.dg-contact__arrow { flex-shrink: 0; margin-left: auto; width: 12px; }
+.dg-contact__location {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  gap: 1.5rem 2.5rem;
+  align-items: start;
+  min-width: 0;
+  background: white;
+  border: 1px solid var(--dg-line);
+  border-radius: 20px;
+  padding: 2rem;
+}
+.dg-contact h2 { font-size: clamp(1.4rem, 2vw, 1.7rem); margin: .6rem 0; letter-spacing: -.025em; }
+.dg-contact__location-heading p { font-size: .9rem; line-height: 1.7; color: var(--dg-text); }
+.dg-contact__map { grid-column: 2; grid-row: 1 / 4; width: 100%; height: 360px; display: block; border: 0; border-radius: 12px; background: var(--dg-canvas); }
+.dg-contact__address { display: flex; gap: .8rem; align-items: start; font-size: .9rem; }
+.dg-contact__address > svg { color: var(--dg-red); flex-shrink: 0; margin-top: .2rem; }
+.dg-contact__address address { font-style: normal; color: var(--dg-text); line-height: 1.7; margin-top: .3rem; }
+.dg-contact__directions { justify-self: start; border: 1px solid var(--dg-line); color: var(--dg-red); }
+.dg-contact__directions:hover { background: var(--dg-canvas); }
+@media (max-width: 1100px) {
+  .dg-contact__channels { grid-template-columns: 1fr; }
+  .dg-contact__card { padding: 1.15rem 1.5rem; }
+  .dg-contact__location { padding: 1.5rem; }
+}
+@media (max-width: 760px) {
+  .dg-contact__container { padding-left: 1rem; padding-right: 1rem; }
+  .dg-contact__hero { padding: 3rem 0; }
+  .dg-contact__hero p { font-size: 1rem; }
+  .dg-contact__location { grid-template-columns: 1fr; gap: 1.25rem; }
+  .dg-contact__map { grid-column: auto; grid-row: auto; height: 300px; }
+  .dg-contact__content { padding-bottom: 3rem; }
+}
+@media (max-width: 420px) {
+  .dg-contact__location { padding: 1.15rem; }
+  .dg-contact__card { padding: 1rem; gap: .75rem; }
+  .dg-contact__arrow { display: none; }
+  .dg-contact__map { height: 260px; }
+}

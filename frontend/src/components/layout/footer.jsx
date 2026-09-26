@@ -1,4 +1,5 @@
 import "../../styles/layout/footer.css";
+import { CONTACT_ADDRESS, CONTACT_EMAIL, CONTACT_EMAIL_IS_PLACEHOLDER, CONTACT_PHONE, MAPS_URL, whatsappUrl } from "../../config/contact.js";
 
 const Footer = () =>{
   const year = new Date().getFullYear();
@@ -22,21 +23,21 @@ const Footer = () =>{
               <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
                 <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.9 21 3 13.1 3 3c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8z" />
               </svg>
-              <a href="tel:+5493468123456">+54 9 3468 123456</a>
+              <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer">{CONTACT_PHONE}</a>
             </li>
             <li>
               <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
                 <path d="M2 4h20v16H2V4zm2 2v.3l8 6 8-6V6H4zm16 12V8.7l-8 6-8-6V18h16z" />
               </svg>
-              <a href="mailto:info@delgiorgiomaquinarias.com.ar">
-                info@delgiorgiomaquinarias.com.ar
-              </a>
+              {!CONTACT_EMAIL_IS_PLACEHOLDER ? <a href={`mailto:${CONTACT_EMAIL}`}>
+                {CONTACT_EMAIL}
+              </a> : <span>{CONTACT_EMAIL} (provisional)</span>}
             </li>
             <li>
               <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
                 <path d="M12 2C7.6 2 4 5.6 4 10c0 5.4 7 11.5 7.3 11.8.2.2.5.3.7.3s.5-.1.7-.3C13 21.5 20 15.4 20 10c0-4.4-3.6-8-8-8zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
               </svg>
-              <span>Ruta 11 km 364, Franck, Santa Fe</span>
+              <a href={MAPS_URL} target="_blank" rel="noopener noreferrer">{CONTACT_ADDRESS}</a>
             </li>
           </ul>
         </div>

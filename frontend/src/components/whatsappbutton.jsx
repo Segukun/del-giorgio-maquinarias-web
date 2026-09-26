@@ -1,11 +1,9 @@
 import { FaWhatsapp } from "react-icons/fa";
+import { whatsappUrl } from "../config/contact.js";
 import "../styles/whatsappbutton.css";
 
-const PHONE = "542281301249";
-const DEFAULT_MESSAGE = "Hola, quisiera consultar su catalogo.";
-
 const WhatsAppButton = () => {
-  const href = `https://wa.me/${PHONE}?text=${encodeURIComponent(DEFAULT_MESSAGE)}`;
+  const href = whatsappUrl();
 
   return (
     

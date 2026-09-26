@@ -11,6 +11,7 @@ import BrandsAdmin from "./pages/admin/BrandsAdmin.jsx";
 
 import Home from "./pages/home.jsx"
 import ProductDetail from "./pages/ProductDetail.jsx";
+import Contact from "./pages/Contact.jsx";
 import PublicLayout from "./components/layout/PublicLayout.jsx";
 
 import { useVisitorTracking } from "./hooks/useVisitorTracking.js";
@@ -27,6 +28,7 @@ const App = () => {
       <Routes>
 
         <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+        <Route path="/contacto" element={<PublicLayout><Contact /></PublicLayout>} />
 
         <Route path="/maquinaria/:id" element={<PublicLayout><ProductDetail /></PublicLayout>} />
 
