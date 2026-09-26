@@ -231,3 +231,10 @@
     display: none;
   }
 }
+
+.dg-sidebar__hint {
+  margin: 0 0 1rem;
+  color: #999;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}

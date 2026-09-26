@@ -136,3 +136,31 @@ export const toggleProductFeatured = async (productId, featured) => {
     updatedAt: serverTimestamp(),
   });
 };
+
+/**
+ * Devuelve, para una categoría dada, qué títulos de características ya se
+ * usaron y qué valores tiene cada uno — para alimentar los selectores de
+ * autocompletado del formulario de carga.
+ *
+ * Resultado: { "COLOR": ["VERDE", "ROJO"], "TRACCIÓN": ["4X2", "4X4"] }
+ */
+export const fetchExtraFieldOptionsByCategory = async (category) => {
+  if (!category) return {};
+
+  const products = await fetchProducts();
+  const map = {};
+
+  products
+    .filter((p) => p.category === category)
+    .forEach((product) => {
+      (product.extraFields ?? []).forEach(({ label, value }) => {
+        if (!label || !value) return;
+        if (!map[label]) map[label] = new Set();
+        map[label].add(value);
+      });
+    });
+
+  return Object.fromEntries(
+    Object.entries(map).map(([label, values]) => [label, Array.from(values).sort()]),
+  );
+};

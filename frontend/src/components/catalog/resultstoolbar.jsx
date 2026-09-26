@@ -4,11 +4,10 @@ const SORT_OPTIONS = [
   { value: "recientes", label: "Más recientes" },
   { value: "antiguos", label: "Más antiguos" },
   { value: "recomendados", label: "Recomendados" },
-  { value: "ancho", label: "Ancho de trabajo" },
 ];
 
 const ResultsToolbar = ({
-  query,
+  searchQuery,
   resultCount,
   sort,
   onSortChange,
@@ -19,7 +18,13 @@ const ResultsToolbar = ({
     <div className="dg-toolbar">
       <div className="dg-toolbar__info">
         <h2>
-          Resultados para: <span>&ldquo;{query}&rdquo;</span>
+          {searchQuery ? (
+            <>
+              Resultados para: <span>&ldquo;{searchQuery}&rdquo;</span>
+            </>
+          ) : (
+            "Catálogo de maquinaria"
+          )}
         </h2>
         <p>Mostrando {resultCount} resultados</p>
       </div>
@@ -63,6 +68,6 @@ const ResultsToolbar = ({
       </div>
     </div>
   );
-}
+};
 
 export default ResultsToolbar;

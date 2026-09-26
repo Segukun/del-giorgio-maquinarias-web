@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiPlus, FiUploadCloud, FiX } from "react-icons/fi";
 import AdminModal from "./AdminModal.jsx";
+import { fetchExtraFieldOptionsByCategory } from "../../firebase/products.js";
 
 const STATUSES = ["Publicado", "Pendiente"];
+const OTHER_LABEL_OPTION = "__OTHER_LABEL__";
+const OTHER_VALUE_OPTION = "__OTHER_VALUE__";
 
 const buildInitialImageItems = (product) =>
   (product?.images ?? []).map((url) => ({
@@ -21,6 +24,8 @@ const buildInitialExtraFields = (product) => {
       id: crypto.randomUUID(),
       label: "Ancho de trabajo (m)",
       value: String(product.workWidth),
+      labelMode: "existing",
+      valueMode: "existing",
     });
   }
 
@@ -30,6 +35,8 @@ const buildInitialExtraFields = (product) => {
         id: crypto.randomUUID(),
         label: field.label ?? "",
         value: field.value ?? "",
+        labelMode: "existing",
+        valueMode: "existing",
       })),
     );
   }
@@ -69,11 +76,41 @@ const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
   );
   const [imageItems, setImageItems] = useState(() => buildInitialImageItems(product));
   const [extraFields, setExtraFields] = useState(() => buildInitialExtraFields(product));
+  const [existingOptions, setExistingOptions] = useState({});
+  const [loadingOptions, setLoadingOptions] = useState(false);
   const [saving, setSaving] = useState(false);
   const isEditing = Boolean(product);
   const isUsed = form.condition === "Usado";
 
   const update = (field, value) => setForm((current) => ({ ...current, [field]: value }));
+
+  /* ---------- Cargar títulos/valores ya usados al elegir categoría ---------- */
+
+  useEffect(() => {
+    if (!form.category) {
+      setExistingOptions({});
+      return;
+    }
+    let isMounted = true;
+    setLoadingOptions(true);
+    fetchExtraFieldOptionsByCategory(form.category)
+      .then((data) => {
+        if (isMounted) setExistingOptions(data);
+      })
+      .finally(() => {
+        if (isMounted) setLoadingOptions(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [form.category]);
+
+  const handleCategoryChange = (value) => {
+    update("category", value);
+    // Al cambiar de categoría, las características ya cargadas dejan de tener
+    // sentido (pertenecían a otra familia de productos)
+    setExtraFields([]);
+  };
 
   /* ---------- Imágenes ---------- */
 
@@ -122,11 +159,30 @@ const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
   /* ---------- Campos adicionales ---------- */
 
   const addExtraField = () => {
-    setExtraFields((current) => [...current, { id: crypto.randomUUID(), label: "", value: "" }]);
+    setExtraFields((current) => [
+      ...current,
+      { id: crypto.randomUUID(), label: "", value: "", labelMode: "select", valueMode: "select" },
+    ]);
   };
 
-  const updateExtraField = (id, key, value) => {
-    setExtraFields((current) => current.map((f) => (f.id === id ? { ...f, [key]: value } : f)));
+  const patchExtraField = (id, patch) => {
+    setExtraFields((current) => current.map((f) => (f.id === id ? { ...f, ...patch } : f)));
+  };
+
+  const handleLabelSelectChange = (id, selectValue) => {
+    if (selectValue === OTHER_LABEL_OPTION) {
+      patchExtraField(id, { labelMode: "custom", label: "", value: "", valueMode: "select" });
+    } else {
+      patchExtraField(id, { labelMode: "existing", label: selectValue, value: "", valueMode: "select" });
+    }
+  };
+
+  const handleValueSelectChange = (id, selectValue) => {
+    if (selectValue === OTHER_VALUE_OPTION) {
+      patchExtraField(id, { valueMode: "custom", value: "" });
+    } else {
+      patchExtraField(id, { valueMode: "existing", value: selectValue });
+    }
   };
 
   const removeExtraField = (id) => {
@@ -164,6 +220,8 @@ const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
       setSaving(false);
     }
   };
+
+  const existingLabels = Object.keys(existingOptions);
 
   return (
     <AdminModal
@@ -236,7 +294,7 @@ const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
             <select
               required
               value={form.category}
-              onChange={(event) => update("category", event.target.value)}
+              onChange={(event) => handleCategoryChange(event.target.value)}
             >
               <option value="">Seleccionar categoría</option>
               {options.categories.map((category) => (
@@ -324,35 +382,90 @@ const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
           <div className="dg-product-form__field is-wide">
             <span className="dg-product-form__label">Campos adicionales</span>
 
-            {extraFields.length ? (
-              <div className="dg-product-form__extra-fields">
-                {extraFields.map((field) => (
-                  <div key={field.id} className="dg-product-form__extra-field-row">
-                    <input
-                      value={field.label}
-                      onChange={(event) => updateExtraField(field.id, "label", event.target.value)}
-                      placeholder="Título (ej. Color)"
-                    />
-                    <input
-                      value={field.value}
-                      onChange={(event) => updateExtraField(field.id, "value", event.target.value)}
-                      placeholder="Valor (ej. Verde)"
-                    />
-                    <button
-                      type="button"
-                      aria-label="Quitar campo"
-                      onClick={() => removeExtraField(field.id)}
-                    >
-                      <FiX aria-hidden="true" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : null}
+            {!form.category ? (
+              <p className="dg-product-form__extra-hint">
+                Elegí una categoría para poder agregar características.
+              </p>
+            ) : (
+              <>
+                {loadingOptions ? (
+                  <p className="dg-product-form__extra-hint">Cargando características existentes...</p>
+                ) : null}
 
-            <button type="button" className="dg-product-form__add-field" onClick={addExtraField}>
-              <FiPlus aria-hidden="true" /> Agregar característica
-            </button>
+                {extraFields.length ? (
+                  <div className="dg-product-form__extra-fields">
+                    {extraFields.map((field) => {
+                      const valueOptions = existingOptions[field.label] ?? [];
+                      return (
+                        <div key={field.id} className="dg-product-form__extra-field-row">
+                          {/* ---- Título ---- */}
+                          {field.labelMode === "custom" ? (
+                            <input
+                              value={field.label}
+                              onChange={(event) => patchExtraField(field.id, { label: event.target.value })}
+                              placeholder="Nuevo título (ej. Color)"
+                              autoFocus
+                            />
+                          ) : (
+                            <select
+                              value={existingLabels.includes(field.label) ? field.label : ""}
+                              onChange={(event) => handleLabelSelectChange(field.id, event.target.value)}
+                            >
+                              <option value="" disabled>
+                                Seleccionar título
+                              </option>
+                              {existingLabels.map((label) => (
+                                <option key={label} value={label}>
+                                  {label}
+                                </option>
+                              ))}
+                              <option value={OTHER_LABEL_OPTION}>Otro (especificar)</option>
+                            </select>
+                          )}
+
+                          {/* ---- Valor ---- */}
+                          {field.valueMode === "custom" || field.labelMode === "custom" ? (
+                            <input
+                              value={field.value}
+                              onChange={(event) => patchExtraField(field.id, { value: event.target.value })}
+                              placeholder="Valor (ej. Verde)"
+                            />
+                          ) : (
+                            <select
+                              value={valueOptions.includes(field.value) ? field.value : ""}
+                              onChange={(event) => handleValueSelectChange(field.id, event.target.value)}
+                              disabled={!field.label}
+                            >
+                              <option value="" disabled>
+                                Seleccionar valor
+                              </option>
+                              {valueOptions.map((value) => (
+                                <option key={value} value={value}>
+                                  {value}
+                                </option>
+                              ))}
+                              <option value={OTHER_VALUE_OPTION}>Otro valor</option>
+                            </select>
+                          )}
+
+                          <button
+                            type="button"
+                            aria-label="Quitar campo"
+                            onClick={() => removeExtraField(field.id)}
+                          >
+                            <FiX aria-hidden="true" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
+
+                <button type="button" className="dg-product-form__add-field" onClick={addExtraField}>
+                  <FiPlus aria-hidden="true" /> Agregar característica
+                </button>
+              </>
+            )}
           </div>
         </div>
 

@@ -1,27 +1,47 @@
 import "../../styles/catalog/filterssidebar.css";
 import CheckboxGroup from "./checkboxgroup";
-import {
-  CATEGORY_OPTIONS,
-  BRAND_OPTIONS,
-  POWER_OPTIONS,
-  TRACTION_OPTIONS,
-  WORK_WIDTH_RANGE,
-  HOURS_RANGE,
-} from "./filtersdata";
 
-const FiltersSidebar = ({ filters, onChange, onApply, onReset }) => {
+const FiltersSidebar = ({
+  filters,
+  onChange,
+  onReset,
+  categories,
+  brands,
+  extraFieldOptions,
+  availableHourPresets,
+}) => {
   const set = (patch) => onChange({ ...filters, ...patch });
 
   const toggleCondition = (key) =>
     set({ conditions: { ...filters.conditions, [key]: !filters.conditions[key] } });
 
-  const toggleInList = (field, value) => {
-    const current = filters[field];
-    const next = current.includes(value)
-      ? current.filter((v) => v !== value)
-      : [...current, value];
-    set({ [field]: next });
+  const toggleBrand = (value) => {
+    const next = filters.brands.includes(value)
+      ? filters.brands.filter((v) => v !== value)
+      : [...filters.brands, value];
+    set({ brands: next });
   };
+
+  const selectCategory = (value) => {
+    // Al cambiar de categoría, los filtros dinámicos y de horas dejan de tener sentido
+    set({ category: filters.category === value ? "" : value, hours: [], extra: {} });
+  };
+
+  const toggleHours = (key) => {
+    const next = filters.hours.includes(key)
+      ? filters.hours.filter((v) => v !== key)
+      : [...filters.hours, key];
+    set({ hours: next });
+  };
+
+  const toggleExtraValue = (label, value) => {
+    const current = filters.extra[label] ?? [];
+    const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
+    set({ extra: { ...filters.extra, [label]: next } });
+  };
+
+  const showHours = filters.conditions.usado && availableHourPresets.length > 0;
+  const extraLabels = Object.keys(extraFieldOptions);
 
   return (
     <aside className="dg-sidebar">
@@ -38,18 +58,18 @@ const FiltersSidebar = ({ filters, onChange, onApply, onReset }) => {
       <div className="dg-sidebar__field">
         <label>Categoría</label>
         <CheckboxGroup
-          options={CATEGORY_OPTIONS}
-          selected={filters.categories}
-          onToggle={(v) => toggleInList("categories", v)}
+          options={categories.map((c) => c.name)}
+          selected={filters.category ? [filters.category] : []}
+          onToggle={selectCategory}
         />
       </div>
 
       <div className="dg-sidebar__field">
         <label>Marca</label>
         <CheckboxGroup
-          options={BRAND_OPTIONS}
+          options={brands.map((b) => b.name)}
           selected={filters.brands}
-          onToggle={(v) => toggleInList("brands", v)}
+          onToggle={toggleBrand}
         />
       </div>
 
@@ -75,138 +95,42 @@ const FiltersSidebar = ({ filters, onChange, onApply, onReset }) => {
         </div>
       </div>
 
-      <div className="dg-sidebar__field">
-        <label>Horas de uso</label>
-        <DualRange
-          min={HOURS_RANGE.min}
-          max={HOURS_RANGE.max}
-          step={100}
-          value={filters.hours}
-          onChange={(hours) => set({ hours })}
-          unit="hs"
-        />
-      </div>
+      {showHours ? (
+        <div className="dg-sidebar__field">
+          <label>Horas de uso</label>
+          <CheckboxGroup
+            options={availableHourPresets.map((p) => p.label)}
+            selected={filters.hours
+              .map((key) => availableHourPresets.find((p) => p.key === key)?.label)
+              .filter(Boolean)}
+            onToggle={(label) => {
+              const preset = availableHourPresets.find((p) => p.label === label);
+              if (preset) toggleHours(preset.key);
+            }}
+          />
+        </div>
+      ) : null}
 
-      <div className="dg-sidebar__field">
-        <label>Potencia</label>
-        <CheckboxGroup
-          options={POWER_OPTIONS}
-          selected={filters.power}
-          onToggle={(v) => toggleInList("power", v)}
-        />
-      </div>
+      {filters.category && extraLabels.length ? (
+        <>
+          {extraLabels.map((label) => (
+            <div className="dg-sidebar__field" key={label}>
+              <label>{label}</label>
+              <CheckboxGroup
+                options={extraFieldOptions[label]}
+                selected={filters.extra[label] ?? []}
+                onToggle={(value) => toggleExtraValue(label, value)}
+              />
+            </div>
+          ))}
+        </>
+      ) : null}
 
-      <div className="dg-sidebar__field">
-        <label>Tracción</label>
-        <CheckboxGroup
-          options={TRACTION_OPTIONS}
-          selected={filters.traction}
-          onToggle={(v) => toggleInList("traction", v)}
-        />
-      </div>
-
-      <div className="dg-sidebar__field">
-        <label>Ancho de trabajo</label>
-        <DualRange
-          min={WORK_WIDTH_RANGE.min}
-          max={WORK_WIDTH_RANGE.max}
-          step={0.1}
-          value={filters.workWidth}
-          onChange={(workWidth) => set({ workWidth })}
-          unit="m"
-        />
-      </div>
-
-      <button type="button" className="dg-sidebar__apply" onClick={onApply}>
-        Aplicar filtros
-      </button>
+      {!filters.category ? (
+        <p className="dg-sidebar__hint">Elegí una categoría para ver más filtros específicos.</p>
+      ) : null}
     </aside>
   );
-}
-
-function DualRange({ min, max, step = 1, value, onChange, unit = "" }) {
-  const [low, high] = value;
-  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
-
-  const handleLow = (e) => {
-    const next = Math.min(Number(e.target.value), high - step);
-    onChange([next, high]);
-  };
-
-  const handleHigh = (e) => {
-    const next = Math.max(Number(e.target.value), low + step);
-    onChange([low, next]);
-  };
-
-  const handleLowInput = (e) => {
-    const raw = Number(e.target.value);
-    if (Number.isNaN(raw)) return;
-    onChange([clamp(raw, min, high - step), high]);
-  };
-
-  const handleHighInput = (e) => {
-    const raw = Number(e.target.value);
-    if (Number.isNaN(raw)) return;
-    onChange([low, clamp(raw, low + step, max)]);
-  };
-
-  const pctLow = ((low - min) / (max - min)) * 100;
-  const pctHigh = ((high - min) / (max - min)) * 100;
-
-  return (
-    <div className="dg-dualrange">
-      <div className="dg-dualrange__track">
-        <div
-          className="dg-dualrange__fill"
-          style={{ left: `${pctLow}%`, width: `${pctHigh - pctLow}%` }}
-        />
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={low}
-        onChange={handleLow}
-        className="dg-dualrange__input"
-      />
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={high}
-        onChange={handleHigh}
-        className="dg-dualrange__input"
-      />
-
-      <div className="dg-dualrange__inputs">
-        <div className="dg-dualrange__inputbox">
-          <input
-            type="number"
-            min={min}
-            max={high - step}
-            step={step}
-            value={low}
-            onChange={handleLowInput}
-          />
-          {unit && <span>{unit}</span>}
-        </div>
-        <span className="dg-dualrange__sep">—</span>
-        <div className="dg-dualrange__inputbox">
-          <input
-            type="number"
-            min={low + step}
-            max={max}
-            step={step}
-            value={high}
-            onChange={handleHighInput}
-          />
-          {unit && <span>{unit}</span>}
-        </div>
-      </div>
-    </div>
-  );
-}
+};
 
 export default FiltersSidebar;

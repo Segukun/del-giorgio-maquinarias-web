@@ -1,18 +1,19 @@
 import { useState } from "react";
 import "../../styles/catalog/filtersmodal.css";
 import CheckboxGroup from "./checkboxgroup";
-import {
-  CATEGORY_OPTIONS,
-  BRAND_OPTIONS,
-  POWER_OPTIONS,
-  TRACTION_OPTIONS,
-  WORK_WIDTH_RANGE,
-  HOURS_RANGE,
-} from "./filtersdata";
 
-const ACCORDION_SECTIONS = ["categoria", "marca", "horas", "potencia", "traccion", "ancho"];
-
-const FiltersModal = ({ open, filters, onChange, onApply, onReset, onClose }) => {
+const FiltersModal = ({
+  open,
+  filters,
+  onChange,
+  onReset,
+  onClose,
+  categories,
+  brands,
+  extraFieldOptions,
+  availableHourPresets,
+  resultCount,
+}) => {
   const [openSection, setOpenSection] = useState(null);
 
   if (!open) return null;
@@ -21,15 +22,33 @@ const FiltersModal = ({ open, filters, onChange, onApply, onReset, onClose }) =>
   const toggleCondition = (key) =>
     set({ conditions: { ...filters.conditions, [key]: !filters.conditions[key] } });
 
-  const toggleInList = (field, value) => {
-    const current = filters[field];
-    const next = current.includes(value)
-      ? current.filter((v) => v !== value)
-      : [...current, value];
-    set({ [field]: next });
+  const toggleBrand = (value) => {
+    const next = filters.brands.includes(value)
+      ? filters.brands.filter((v) => v !== value)
+      : [...filters.brands, value];
+    set({ brands: next });
+  };
+
+  const selectCategory = (value) => {
+    set({ category: filters.category === value ? "" : value, hours: [], extra: {} });
+  };
+
+  const toggleHours = (key) => {
+    const next = filters.hours.includes(key)
+      ? filters.hours.filter((v) => v !== key)
+      : [...filters.hours, key];
+    set({ hours: next });
+  };
+
+  const toggleExtraValue = (label, value) => {
+    const current = filters.extra[label] ?? [];
+    const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
+    set({ extra: { ...filters.extra, [label]: next } });
   };
 
   const toggleSection = (key) => setOpenSection((s) => (s === key ? null : key));
+  const showHours = filters.conditions.usado && availableHourPresets.length > 0;
+  const extraLabels = Object.keys(extraFieldOptions);
 
   return (
     <div className="dg-filtermodal">
@@ -74,9 +93,9 @@ const FiltersModal = ({ open, filters, onChange, onApply, onReset, onClose }) =>
             onToggle={() => toggleSection("categoria")}
           >
             <CheckboxGroup
-              options={CATEGORY_OPTIONS}
-              selected={filters.categories}
-              onToggle={(v) => toggleInList("categories", v)}
+              options={categories.map((c) => c.name)}
+              selected={filters.category ? [filters.category] : []}
+              onToggle={selectCategory}
             />
           </AccordionRow>
 
@@ -86,111 +105,62 @@ const FiltersModal = ({ open, filters, onChange, onApply, onReset, onClose }) =>
             onToggle={() => toggleSection("marca")}
           >
             <CheckboxGroup
-              options={BRAND_OPTIONS}
+              options={brands.map((b) => b.name)}
               selected={filters.brands}
-              onToggle={(v) => toggleInList("brands", v)}
+              onToggle={toggleBrand}
             />
           </AccordionRow>
 
-          <AccordionRow
-            title="Horas de uso"
-            isOpen={openSection === "horas"}
-            onToggle={() => toggleSection("horas")}
-          >
-            <div className="dg-filtermodal__range-inline">
-              <input
-                type="number"
-                min={HOURS_RANGE.min}
-                max={filters.hours[1]}
-                step={100}
-                value={filters.hours[0]}
-                onChange={(e) => set({ hours: [Number(e.target.value), filters.hours[1]] })}
+          {showHours ? (
+            <AccordionRow
+              title="Horas de uso"
+              isOpen={openSection === "horas"}
+              onToggle={() => toggleSection("horas")}
+            >
+              <CheckboxGroup
+                options={availableHourPresets.map((p) => p.label)}
+                selected={filters.hours
+                  .map((key) => availableHourPresets.find((p) => p.key === key)?.label)
+                  .filter(Boolean)}
+                onToggle={(label) => {
+                  const preset = availableHourPresets.find((p) => p.label === label);
+                  if (preset) toggleHours(preset.key);
+                }}
               />
-              <span>a</span>
-              <input
-                type="number"
-                min={filters.hours[0]}
-                max={HOURS_RANGE.max}
-                step={100}
-                value={filters.hours[1]}
-                onChange={(e) => set({ hours: [filters.hours[0], Number(e.target.value)] })}
-              />
-              <span>hs</span>
-            </div>
-          </AccordionRow>
+            </AccordionRow>
+          ) : null}
 
-          <AccordionRow
-            title="Potencia"
-            isOpen={openSection === "potencia"}
-            onToggle={() => toggleSection("potencia")}
-          >
-            <CheckboxGroup
-              options={POWER_OPTIONS}
-              selected={filters.power}
-              onToggle={(v) => toggleInList("power", v)}
-            />
-          </AccordionRow>
+          {filters.category
+            ? extraLabels.map((label) => (
+                <AccordionRow
+                  key={label}
+                  title={label}
+                  isOpen={openSection === label}
+                  onToggle={() => toggleSection(label)}
+                >
+                  <CheckboxGroup
+                    options={extraFieldOptions[label]}
+                    selected={filters.extra[label] ?? []}
+                    onToggle={(value) => toggleExtraValue(label, value)}
+                  />
+                </AccordionRow>
+              ))
+            : null}
 
-          <AccordionRow
-            title="Tracción"
-            isOpen={openSection === "traccion"}
-            onToggle={() => toggleSection("traccion")}
-          >
-            <CheckboxGroup
-              options={TRACTION_OPTIONS}
-              selected={filters.traction}
-              onToggle={(v) => toggleInList("traction", v)}
-            />
-          </AccordionRow>
-
-          <AccordionRow
-            title="Ancho de trabajo"
-            isOpen={openSection === "ancho"}
-            onToggle={() => toggleSection("ancho")}
-          >
-            <div className="dg-filtermodal__range-inline">
-              <input
-                type="number"
-                min={WORK_WIDTH_RANGE.min}
-                max={filters.workWidth[1]}
-                step={0.1}
-                value={filters.workWidth[0]}
-                onChange={(e) =>
-                  set({ workWidth: [Number(e.target.value), filters.workWidth[1]] })
-                }
-              />
-              <span>a</span>
-              <input
-                type="number"
-                min={filters.workWidth[0]}
-                max={WORK_WIDTH_RANGE.max}
-                step={0.1}
-                value={filters.workWidth[1]}
-                onChange={(e) =>
-                  set({ workWidth: [filters.workWidth[0], Number(e.target.value)] })
-                }
-              />
-              <span>m</span>
-            </div>
-          </AccordionRow>
+          {!filters.category ? (
+            <p className="dg-sidebar__hint">Elegí una categoría para ver más filtros específicos.</p>
+          ) : null}
         </div>
 
         <div className="dg-filtermodal__footer">
-          <button
-            type="button"
-            className="dg-filtermodal__apply"
-            onClick={() => {
-              onApply();
-              onClose();
-            }}
-          >
-            Aplicar filtros
+          <button type="button" className="dg-filtermodal__apply" onClick={onClose}>
+            Ver {resultCount} resultados
           </button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 function AccordionRow({ title, isOpen, onToggle, children }) {
   return (

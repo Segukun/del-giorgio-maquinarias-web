@@ -1491,3 +1491,20 @@ body.dg-modal-open {
     grid-template-columns: 1fr;
   }
 }
+
+.dg-product-form__extra-hint {
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  color: #7893ad;
+  background: #f7f9fb;
+  border: 1px dashed #d8e0e8;
+  border-radius: 0.5rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.dg-product-form__extra-field-row select:disabled {
+  color: #b9c2cc;
+  background: #f7f9fb;
+  cursor: not-allowed;
+}

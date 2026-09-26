@@ -10,6 +10,7 @@ import CategoriesAdmin from "./pages/admin/CategoriesAdmin.jsx";
 import BrandsAdmin from "./pages/admin/BrandsAdmin.jsx";
 
 import Home from "./pages/home.jsx"
+import Catalog from "./pages/catalog.jsx";
 import ProductDetail from "./pages/ProductDetail.jsx";
 import PublicLayout from "./components/layout/PublicLayout.jsx";
 
@@ -27,13 +28,13 @@ const App = () => {
       <Routes>
 
         <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
-
         <Route path="/maquinaria/:id" element={<PublicLayout><ProductDetail /></PublicLayout>} />
+        <Route path="/catalogo" element={<PublicLayout><Catalog/></PublicLayout>}/>
+
 
         <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin/reset-password" element={<AdminResetPasswordPage />} />
-
         <Route path="/admin/panel" element={<Navigate to="/admin/panel/inicio" replace />} />
 
         <Route

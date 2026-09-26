@@ -1,4 +1,11 @@
+import { Link } from "react-router-dom";
 import "../styles/quickfilters.css";
+
+const categoryHref = (name) =>
+  `/catalogo?categoria=${encodeURIComponent(name)}&label=${encodeURIComponent(name)}`;
+
+const conditionHref = (condicion, label) =>
+  `/catalogo?condicion=${condicion}&label=${encodeURIComponent(label)}`;
 
 const CONDITION_FILTERS = [
   {
@@ -6,7 +13,7 @@ const CONDITION_FILTERS = [
     title: "NUEVOS",
     subtitle: "Maquinaria 0 km con garantía oficial",
     image: "/tractor-red.png",
-    href: "/nuevos",
+    href: conditionHref("nuevo", "Nuevos"),
     variant: "blue",
   },
   {
@@ -14,7 +21,7 @@ const CONDITION_FILTERS = [
     title: "USADOS",
     subtitle: "Equipos revisados y listos para trabajar",
     image: "/rastra-red.png",
-    href: "/usados",
+    href: conditionHref("usado", "Usados"),
     variant: "red",
   },
 ];
@@ -48,9 +55,9 @@ const QuickFilters = () => {
     <section className="dg-quickfilters">
       <div className="dg-quickfilters__conditions">
         {CONDITION_FILTERS.map((item) => (
-          <a
+          <Link
             key={item.key}
-            href={item.href}
+            to={item.href}
             className={`dg-condition-card dg-condition-card--${item.variant}`}
             style={{ backgroundImage: `url(${item.image})` }}
           >
@@ -62,7 +69,7 @@ const QuickFilters = () => {
             <span className="dg-condition-card__arrow" aria-hidden>
               &#8250;
             </span>
-          </a>
+          </Link>
         ))}
       </div>
 
@@ -75,16 +82,16 @@ const QuickFilters = () => {
           >
             <div className="dg-category-card__overlay" />
 
-            <a href={`/categoria/${cat.key}`} className="dg-category-card__main">
+            <Link to={categoryHref(cat.title)} className="dg-category-card__main">
               <img className="dg-category-card__icon" src={cat.icon} alt="" aria-hidden />
               <h4>{cat.title}</h4>
-            </a>
+            </Link>
 
             <div className="dg-category-card__subfilters">
               {cat.subfilters.map((sub) => (
-                <button key={sub} type="button" className="dg-chip">
+                <Link key={sub} to={categoryHref(sub)} className="dg-chip">
                   {sub}
-                </button>
+                </Link>
               ))}
             </div>
           </div>
@@ -92,6 +99,6 @@ const QuickFilters = () => {
       </div>
     </section>
   );
-}
+};
 
 export default QuickFilters;

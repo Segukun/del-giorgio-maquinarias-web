@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../../styles/layout/header.css";
 
 const NAV_LINKS = [
   { label: "Inicio", href: "/" },
-  { label: "Nuevos", href: "/nuevos" },
-  { label: "Usados", href: "/usados" },
+  { label: "Nuevos", href: "/catalogo?condicion=nuevo" },
+  { label: "Usados", href: "/catalogo?condicion=usado" },
   { label: "Marcas", href: "/marcas" },
   { label: "Nosotros", href: "/nosotros" },
   { label: "Contacto", href: "/contacto" },
@@ -15,6 +16,8 @@ const Header = () => {
   const [query, setQuery] = useState("");
   const [compact, setCompact] = useState(false);
   const lastScrollY = useRef(0);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,10 +29,23 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Mantiene el buscador sincronizado con la URL real, sin importar
+  // cómo se llegó a ella (tipeando, un chip de categoría, un link directo).
+  useEffect(() => {
+    if (location.pathname !== "/catalogo") {
+      setQuery("");
+      return;
+    }
+    const params = new URLSearchParams(location.search);
+    setQuery(params.get("q") ?? "");
+  }, [location]);
+
   const handleSearch = (e) => {
     e.preventDefault();
-    // Integrar con la lógica de búsqueda / routing real
-    console.log("Buscar:", query);
+    const trimmed = query.trim();
+    if (!trimmed) return;
+    setMenuOpen(false);
+    navigate(`/catalogo?q=${encodeURIComponent(trimmed)}`);
   };
 
   return (
@@ -88,6 +104,6 @@ const Header = () => {
       )}
     </header>
   );
-}
+};
 
 export default Header;

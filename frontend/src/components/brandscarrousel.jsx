@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { fetchBrands } from "../firebase/brands.js";
+import { useEffect, useState } from "react";
 import "../styles/brandscarrousel.css";
 
 const BrandsCarrousel = () => {
@@ -29,7 +30,6 @@ const BrandsCarrousel = () => {
 
   if (loading || !brands.length) return null;
 
-  // Se duplica la lista para lograr un loop continuo sin cortes.
   const loopBrands = [...brands, ...brands];
 
   return (
@@ -41,9 +41,14 @@ const BrandsCarrousel = () => {
       <div className="dg-brands__track-wrapper">
         <div className="dg-brands__track">
           {loopBrands.map((brand, i) => (
-            <div className="dg-brands__item" key={`${brand.id}-${i}`}>
+            <Link
+              className="dg-brands__item"
+              key={`${brand.id}-${i}`}
+              to={`/catalogo?marca=${encodeURIComponent(brand.name)}&label=${encodeURIComponent(brand.name)}`}
+              aria-label={`Ver maquinaria de ${brand.name}`}
+            >
               <img src={brand.image?.url ?? brand.image} alt={brand.name} loading="lazy" />
-            </div>
+            </Link>
           ))}
         </div>
       </div>
