@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { whatsappUrl } from "../config/contact.js";
 import { fetchProducts } from "../firebase/products.js";
 import { trackWhatsappClick } from "../firebase/tracking.js";
 import "../styles/featuredproducts.css";
@@ -50,8 +51,7 @@ const FeaturedProducts = () => {
   const visibleProducts = products.slice(0, visible);
 
   const whatsappHref = (name) =>
-    "https://wa.me/542281301249?text=" +
-    encodeURIComponent(`Hola, quisiera consultar por ${name}.`);
+    whatsappUrl(`Hola, quisiera consultar por ${name}.`);
 
   return (
     <section className="dg-featured">

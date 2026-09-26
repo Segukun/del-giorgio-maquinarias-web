@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { whatsappUrl } from "../config/contact.js";
 import "../styles/hero.css";
 
 const SLIDES = [
@@ -35,9 +36,7 @@ const Hero = () => {
   const prev = () => setActive((i) => (i - 1 + SLIDES.length) % SLIDES.length);
   const next = () => setActive((i) => (i + 1) % SLIDES.length);
 
-  const whatsappHref =
-    "https://wa.me/5493468123456?text=" +
-    encodeURIComponent("Hola, quisiera consultar por maquinaria agrícola.");
+  const whatsappHref = whatsappUrl("Hola, quisiera consultar por maquinaria agrícola.");
 
   return (
     <section className="dg-hero">
