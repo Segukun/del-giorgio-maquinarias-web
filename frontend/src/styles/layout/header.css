@@ -11,25 +11,36 @@
 .dg-header__inner {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
 }
 
-.dg-header__logo img {
-  height: 42px;
-  width: auto;
+.dg-header__logo {
+  position: relative;
   display: block;
-  transition: transform 0.25s ease;
+  flex: 0 0 auto;
+  width: 116px;
+  aspect-ratio: 116 / 68;
+  overflow: hidden;
+  transition: width 0.25s ease;
 }
 
-.dg-header__logo:hover img {
-  transform: scale(1.05);
+/* Frame the visible mark in the original 1254px PNG, keeping its proportions.
+   Transparent margins: x=26..1224, y=334..1031. The asset stays unchanged. */
+.dg-header__logo img {
+  position: absolute;
+  width: 103.4483%;
+  max-width: none;
+  height: auto;
+  left: -1.7241%;
+  top: -45.5882%;
 }
 
 .dg-header__search {
   flex: 1;
+  min-width: 0;
   max-width: 480px;
   display: flex;
   align-items: center;
@@ -45,6 +56,8 @@
 
 .dg-header__search input {
   flex: 1;
+  min-width: 0;
+  width: 100%;
   border: none;
   outline: none;
   font-size: 0.9rem;
@@ -53,6 +66,7 @@
 }
 
 .dg-header__search button {
+  flex-shrink: 0;
   border: none;
   background: var(--dg-red);
   color: #fff;
@@ -73,7 +87,8 @@
 
 .dg-header__nav {
   display: flex;
-  gap: 1.75rem;
+  gap: 1.25rem;
+  flex-shrink: 0;
   margin-left: auto;
 }
 
@@ -106,8 +121,10 @@
   flex-direction: column;
   justify-content: center;
   gap: 5px;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  margin-left: auto;
   background: none;
   border: none;
   cursor: pointer;
@@ -153,20 +170,19 @@
   padding-bottom: 0.4rem;
 }
 
-.dg-header.is-compact .dg-header__logo img {
-  height: 32px;
+.dg-header.is-compact .dg-header__logo {
+  width: 102px;
 }
 
 .dg-header__inner {
   transition: padding 0.3s ease;
 }
 
-.dg-header__logo img {
-  transition: height 0.3s ease, transform 0.25s ease;
-}
+@media (max-width: 1100px) {
+  .dg-header__logo { width: 104px; }
 
-@media (max-width: 960px) {
   .dg-header__nav {
+    display: none;
     position: absolute;
     top: 100%;
     left: 0;
@@ -174,13 +190,12 @@
     background: var(--dg-red-dark);
     flex-direction: column;
     gap: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
+    max-height: calc(100dvh - 140px);
+    overflow-y: auto;
   }
 
   .dg-header__nav.is-open {
-    max-height: 400px;
+    display: flex;
   }
 
   .dg-header__link {
@@ -206,6 +221,5 @@
     border: none;
     border-radius: 999px;
     padding: 0.6rem 1rem;
-    outline: none;
   }
 }

@@ -12,6 +12,11 @@ import BrandsAdmin from "./pages/admin/BrandsAdmin.jsx";
 import Home from "./pages/home.jsx"
 import ProductDetail from "./pages/ProductDetail.jsx";
 import Contact from "./pages/Contact.jsx";
+import Privacy from "./pages/Privacy.jsx";
+import Terms from "./pages/Terms.jsx";
+import Faq from "./pages/Faq.jsx";
+import About from "./pages/About.jsx";
+import Brands from "./pages/Brands.jsx";
 import PublicLayout from "./components/layout/PublicLayout.jsx";
 
 import { useVisitorTracking } from "./hooks/useVisitorTracking.js";
@@ -29,6 +34,12 @@ const App = () => {
 
         <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
         <Route path="/contacto" element={<PublicLayout><Contact /></PublicLayout>} />
+        <Route path="/privacidad" element={<PublicLayout><Privacy /></PublicLayout>} />
+        <Route path="/terminos" element={<PublicLayout><Terms /></PublicLayout>} />
+        <Route path="/preguntas-frecuentes" element={<PublicLayout><Faq /></PublicLayout>} />
+        <Route path="/faq" element={<Navigate to="/preguntas-frecuentes" replace />} />
+        <Route path="/nosotros" element={<PublicLayout><About /></PublicLayout>} />
+        <Route path="/marcas" element={<PublicLayout><Brands /></PublicLayout>} />
 
         <Route path="/maquinaria/:id" element={<PublicLayout><ProductDetail /></PublicLayout>} />
 

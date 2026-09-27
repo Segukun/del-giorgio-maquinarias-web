@@ -1,205 +1,82 @@
-# Del Giorgio Maquinarias - Web
+# Del Giorgio Maquinarias
 
-Sitio web oficial de **Del Giorgio Maquinarias**, orientado a presentar el negocio, publicar el catálogo de maquinaria agrícola nueva y usada y facilitar el contacto con clientes mediante WhatsApp, teléfono y los demás canales comerciales de la empresa.
+Sitio público y panel administrativo para el catálogo de maquinaria agrícola nueva y usada de Del Giorgio Maquinarias, Benito Juárez. Estado documentado: septiembre de 2026.
 
-El proyecto incluye una web pública y un panel administrativo protegido. Desde este panel, las personas autorizadas podrán mantener el catálogo actualizado desde cualquier ciudad y dispositivo con acceso a Internet.
+## Arquitectura actual
 
-## Objetivos
+- `frontend/`: React 19, Vite 8, React Router 7 y CSS. Incluye las páginas públicas y el panel administrativo.
+- Firebase Authentication: acceso del personal al panel.
+- Cloud Firestore: catálogo, perfiles administrativos, actividad y estadísticas.
+- Firebase Storage: imágenes de maquinaria y marcas.
+- `functions/`: Cloud Functions con Node.js 24 para gestión de personal y agregación de métricas.
+- `firebase.json`: configuración del código de Functions. El repositorio no configura el hosting del frontend ni incluye reglas de Firestore/Storage.
 
-- Contar con una presencia web profesional bajo el dominio de la empresa.
-- Centralizar el catálogo de maquinarias, la información comercial, la ubicación y los medios de contacto.
-- Facilitar consultas mediante WhatsApp desde cada publicación.
-- Permitir la administración remota del catálogo desde computadoras, tablets y celulares.
-- Preparar la infraestructura para utilizar correo electrónico corporativo con el dominio del negocio.
-- Mantener una arquitectura clara que permita incorporar mejoras sin rehacer el proyecto.
+El frontend utiliza el SDK de Firebase directamente y funciones callable para la gestión de personal. No hay una API Express ni una base MongoDB. Los roles administrativos existentes son `owner` y `staff`.
 
-## Alcance funcional
+## Desarrollo local
 
-### Sitio público
+Desde `frontend/`:
 
-Los visitantes no necesitan registrarse ni iniciar sesión. Pueden:
-
-- conocer la empresa y sus servicios;
-- consultar maquinaria nueva y usada;
-- filtrar publicaciones por marca, categoría y condición;
-- acceder a fichas individuales con descripción, características e imágenes;
-- visualizar el estado de cada maquinaria: disponible, reservada o vendida;
-- consultar las marcas con las que trabaja la empresa;
-- acceder a información sobre repuestos y servicio postventa;
-- consultar la ubicación y los datos de contacto;
-- comunicarse por WhatsApp desde cada publicación;
-- acceder a las redes sociales de la empresa.
-
-El proyecto no contempla cuentas de clientes, carrito de compras, pagos online, comentarios ni mensajería interna.
-
-### Panel administrativo
-
-El panel administrativo estará protegido mediante autenticación y será accesible por Internet desde distintos dispositivos.
-
-Permitirá:
-
-- crear, editar y eliminar publicaciones de maquinaria;
-- marcar una maquinaria como disponible, reservada o vendida;
-- indicar si una maquinaria es nueva o usada;
-- destacar publicaciones;
-- administrar descripciones y características técnicas;
-- seleccionar marcas y categorías;
-- cargar, ordenar y eliminar imágenes;
-- mantener el mismo catálogo centralizado para todos los administradores.
-
-La arquitectura permitirá utilizar varias cuentas administrativas, aunque inicialmente se comience con una sola. No se necesitan roles complejos: todos los administradores tendrán los mismos permisos.
-
-## Tecnologías
-
-### Frontend
-
-- **React**
-- **Vite**
-- Interfaz responsive para escritorio, tablet y celular
-
-### Backend
-
-- **Node.js**
-- **Express**
-- API REST
-
-### Base de datos
-
-- **MongoDB**
-- Servicio administrado accesible desde el backend
-
-### Imágenes
-
-Las fotografías se almacenarán en un servicio externo especializado. MongoDB guardará únicamente sus URLs y metadatos.
-
-El proveedor todavía debe definirse. **Cloudinary** es una de las alternativas a evaluar, pero no se considera una decisión confirmada.
-
-## Arquitectura general
-
-```text
-Visitantes                         Administradores
-    |                                     |
-    |                                     |
-    +------------ React + Vite -----------+
-                          |
-                          | API REST / HTTPS
-                          v
-                   Node.js + Express
-                          |
-              +-----------+-----------+
-              |                       |
-              v                       v
-           MongoDB          Servicio de imágenes
-                                      externo
+```powershell
+npm install
+Copy-Item .env.example .env # solo si todavía no existe .env
+npm run dev -- --host 127.0.0.1
 ```
 
-El frontend nunca se conecta directamente a MongoDB. La autenticación, la autorización y todas las operaciones de escritura se validan en el backend.
+Completar la configuración pública de Firebase en `.env`. `VITE_CONTACT_EMAIL` contiene el correo público confirmado; si falta, Contacto y el footer indican un correo provisional, sin habilitar un enlace de envío. Las páginas informativas ofrecen los otros canales hasta que haya un correo configurado. Reiniciar Vite después de cambiar el entorno.
 
-## Administración remota
+No guardar secretos en variables `VITE_*`: sus valores forman parte del frontend distribuido. La configuración de contacto y los enlaces oficiales están centralizados en `frontend/src/config/contact.js`.
 
-El panel administrativo no estará asociado a una computadora ni a una red local. Los datos se almacenarán de forma centralizada, por lo que una modificación realizada desde un dispositivo estará disponible para los demás administradores al volver a consultar el catálogo.
+## Rutas públicas
 
-```text
-Administrador desde notebook
-             |
-             v
-      Actualiza maquinaria
-             |
-             v
-        API + MongoDB
-             |
-             v
-Administrador desde celular
-      consulta el mismo cambio
+| Ruta | Contenido |
+| --- | --- |
+| `/` | Inicio, maquinaria destacada y marcas |
+| `/maquinaria/:id` | Ficha individual y consulta por WhatsApp |
+| `/contacto` | WhatsApp, email, dirección y mapa |
+| `/nosotros` | Presentación institucional, repuestos y postventa |
+| `/marcas` | Marcas activas del catálogo de Firestore |
+| `/preguntas-frecuentes` | Ocho preguntas desplegables |
+| `/privacidad` | Tratamiento real de datos y proveedores |
+| `/terminos` | Términos de uso del catálogo |
+| `/faq` | Redirección al enlace canónico de preguntas frecuentes |
+
+Las páginas públicas comparten `PublicLayout`, Header, Footer y botón flotante de WhatsApp. Las nuevas páginas informativas comparten `InformationPage` y sus estilos. El sitio no realiza ventas ni pagos online y los visitantes no crean cuentas.
+
+El panel tiene login y recuperación de acceso, y rutas bajo `/admin/panel/` para inicio, productos, personal, categorías, marcas y cuenta. Su comportamiento no se modificó en esta actualización pública.
+
+## Estadísticas implementadas
+
+Las métricas son propias, guardadas en Firestore. No se integra el SDK de Firebase Analytics / Google Analytics.
+
+- `sessions`: `sessionId`, fecha, tipo de dispositivo, origen del tráfico, ciudad y provincia aproximadas, e indicador `hadInteraction`.
+- `events`: `product_view` (ID y nombre de maquinaria) y `whatsapp_click` (sin producto asociado), con sesión y fecha.
+- `dailyStats`: totales diarios, dispositivos, procedencias y ubicaciones, calculados mediante Functions.
+- `productStats`: cantidad de visualizaciones y última vista por maquinaria.
+- El panel muestra comparaciones por período, maquinaria más vista y visualizaciones recientes.
+
+El navegador guarda `dg_session_id` y `dg_session_created` en `sessionStorage`. La consulta a `https://ipapi.co/json/` estima ciudad y provincia a partir de la conexión; estos son los únicos campos de esa respuesta conservados por el registro de sesión. La dirección IP llega al proveedor, pero no se guarda como campo en `sessions`.
+
+Las vistas se registran desde `ProductDetail`; los clics a WhatsApp desde `featuredproducts` y `ProductDetail`. Los demás enlaces a WhatsApp no registran ese evento. No se miden todas las páginas, tiempo de permanencia, contenido de mensajes ni ventas. Un identificador de sesión no equivale a una persona única. No hay una tarea de borrado automático de estos registros en el código del repositorio.
+
+## Verificación
+
+Desde `frontend/`:
+
+```powershell
+npm run lint
+npm test
+npm run build
 ```
 
-Si dos personas editan una misma publicación simultáneamente, el sistema deberá detectar o administrar el conflicto para evitar sobrescrituras silenciosas.
+La salida de producción se genera en `frontend/dist/`. El servidor que aloje la SPA debe resolver las rutas públicas a `index.html` para permitir accesos directos.
 
-## Estructura del repositorio
+## Pendientes existentes
 
-```text
-del-giorgio-maquinarias/
-|-- docs/          # Arquitectura, requisitos y decisiones del proyecto
-|-- frontend/      # Sitio público y panel administrativo en React + Vite
-|-- backend/       # API, autenticación y lógica de negocio en Node.js + Express
-|-- .gitignore
-`-- README.md
-```
+- Confirmar el correo público definitivo mediante `VITE_CONTACT_EMAIL`.
+- Completar la historia y las fotografías reales del negocio cuando se proporcionen.
+- El buscador del header todavía no ejecuta búsquedas; `/nuevos` y `/usados` figuran en la navegación original pero no tienen rutas implementadas.
+- El lint global detecta un error previo en `src/hooks/useAdminSession.js` (`react-hooks/set-state-in-effect`); no se cambió Admin en esta tarea.
+- El build advierte sobre el tamaño del paquete principal; queda pendiente separar más código por ruta.
 
-Cada aplicación tiene su propia documentación:
-
-- `frontend/README.md`: estructura, rutas, integración con la API y convenciones del frontend.
-- `backend/README.md`: arquitectura, endpoints, modelos, seguridad y despliegue del backend.
-- `docs/Documentacion_Tecnica_Del_Giorgio_Maquinarias.pdf`: alcance, tecnologías y arquitectura general.
-
-## Flujo principal
-
-### Consulta pública
-
-```text
-Visitante
-   |
-   v
-Consulta el catálogo
-   |
-   v
-Abre la ficha de una maquinaria
-   |
-   v
-Selecciona "Consultar por WhatsApp"
-```
-
-### Administración del catálogo
-
-```text
-Administrador
-   |
-   v
-Inicia sesión en /admin
-   |
-   v
-Crea o modifica una maquinaria
-   |
-   +--> MongoDB guarda la información
-   |
-   `--> El servicio externo guarda las imágenes
-```
-
-## Seguridad
-
-- El repositorio no debe contener credenciales ni secretos.
-- Los archivos `.env`, las claves de API, las contraseñas y las credenciales de base de datos deben permanecer fuera del control de versiones.
-- Las contraseñas administrativas deben almacenarse mediante hashes seguros.
-- Las rutas administrativas deben validar autenticación y autorización en Express.
-- La aplicación debe utilizar HTTPS en producción.
-- El acceso a MongoDB y al servicio de imágenes debe realizarse con credenciales de privilegios limitados.
-- No deben almacenarse fotografías de producción en el disco local del backend.
-
-## Estado del proyecto
-
-El alcance y la arquitectura principal se encuentran definidos. El proyecto está preparado para iniciar o continuar la implementación de:
-
-1. estructura base del frontend y del backend;
-2. modelos y API del catálogo;
-3. sitio público;
-4. autenticación administrativa;
-5. gestión remota de maquinarias;
-6. integración con el proveedor de imágenes;
-7. pruebas, seguridad y despliegue.
-
-## Decisiones pendientes
-
-- proveedor externo de almacenamiento de imágenes;
-- mecanismo definitivo de sesión administrativa;
-- proveedores de hosting para frontend y backend;
-- política de visibilidad de publicaciones vendidas;
-- borrado definitivo o archivado de publicaciones;
-- alcance final de la gestión de marcas y categorías.
-
-## Documentación
-
-La documentación técnica y funcional se encuentra en la carpeta `docs/`.
-
-## Autoría
-
-Proyecto desarrollado para **Del Giorgio Maquinarias**.
+Ver [documentación del frontend](frontend/README.md) y [configuración de Contacto](frontend/CONTACTO.md).
