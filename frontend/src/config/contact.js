@@ -11,3 +11,7 @@ export const whatsappUrl = (message = "Hola, quisiera consultar su catalogo.") =
 
 export const MAPS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(CONTACT_ADDRESS)}`;
 export const MAP_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(CONTACT_ADDRESS)}&output=embed`;
+
+export const MAPS_PROFILE_URL = "https://maps.app.goo.gl/NpyX7QCTfPEJuLAK7";
+export const INSTAGRAM_URL = "https://www.instagram.com/delgiorgiomaquinarias?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==";
+export const FACEBOOK_URL = "https://www.facebook.com/p/Del-Giorgio-Maquinarias-61561764549250/";

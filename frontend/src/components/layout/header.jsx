@@ -23,7 +23,6 @@ const Header = () => {
     const handleScroll = () => {
       const y = window.scrollY;
       setCompact(y > 60);
-      lastScrollY.current = y;
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -58,6 +57,7 @@ const Header = () => {
         <form className="dg-header__search" onSubmit={handleSearch}>
           <input
             type="text"
+            aria-label="Buscar maquinaria, marca o modelo"
             placeholder="Buscar maquinaria, marca o modelo..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -70,7 +70,7 @@ const Header = () => {
           </button>
         </form>
 
-        <nav className={`dg-header__nav ${menuOpen ? "is-open" : ""}`}>
+        <nav id="public-navigation" aria-label="Navegación principal" className={`dg-header__nav ${menuOpen ? "is-open" : ""}`}>
           {NAV_LINKS.map((link) => (
             <a key={link.href} href={link.href} className="dg-header__link">
               {link.label}
@@ -81,8 +81,10 @@ const Header = () => {
         <button
           className={`dg-header__burger ${menuOpen ? "is-open" : ""}`}
           onClick={() => setMenuOpen((v) => !v)}
-          aria-label="Abrir menú"
+          type="button"
+          aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
           aria-expanded={menuOpen}
+          aria-controls="public-navigation"
         >
           <span />
           <span />
@@ -95,6 +97,7 @@ const Header = () => {
           <form onSubmit={handleSearch}>
             <input
               type="text"
+              aria-label="Buscar maquinaria"
               placeholder="Buscar maquinaria..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
