@@ -176,16 +176,18 @@ const ProductDetail = () => {
 
       {/* ---------- Descripción y ficha técnica ---------- */}
       <div className="dg-pd__details">
-        {product.detail ? (
+        {Array.isArray(product.detail) && product.detail.length ? (
           <section className="dg-pd__section dg-pd__section--description">
             <h2>Descripción</h2>
-            <p>{product.detail}</p>
+            {product.detail.map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))}
           </section>
         ) : null}
 
         {specs.length ? (
           <section className="dg-pd__section">
-            <h2>Ficha técnica</h2>
+            <h2>Detalles</h2>
             <dl className="dg-pd__spec-list">
               {specs.map((spec) => (
                 <div key={spec.label}>

@@ -203,7 +203,10 @@ const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
         condition: form.condition,
         status: form.status,
         year: form.year,
-        detail: form.detail,
+        detail: form.detail
+        .split(/\n\s*\n/) // separa por una o más líneas en blanco (doble enter o más)
+        .map((p) => p.trim())
+        .filter(Boolean),
         featured: Boolean(form.featured),
         hoursValue: isUsed ? form.hoursValue : null,
         hoursTag: isUsed ? form.hoursTag : "NUEVO",
