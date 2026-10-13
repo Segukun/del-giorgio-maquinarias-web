@@ -64,7 +64,7 @@ const Hero = () => {
         <p className="dg-hero__subtitle">{SLIDES[active].subtitle}</p>
 
         <div className="dg-hero__actions">
-          <a href="/nuevos" className="dg-btn dg-btn--primary">
+          <a href="/catalogo" className="dg-btn dg-btn--primary">
             Ver catálogo <span aria-hidden>→</span>
           </a>
           <a

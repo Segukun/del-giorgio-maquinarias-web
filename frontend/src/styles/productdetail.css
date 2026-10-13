@@ -1,28 +1,36 @@
 /* =========================================================
-   BREADCRUMB
+   CONTENEDOR
 ========================================================= */
 
 .dg-pd {
   width: min(100%, 1180px);
   margin: 0 auto;
   padding: 1.75rem 1.5rem 4.5rem;
+  overflow-x: clip;
 }
+
+/* =========================================================
+   BREADCRUMB
+========================================================= */
 
 .dg-pd__breadcrumb {
   margin-bottom: 1.5rem;
 }
 
-.dg-pd__breadcrumb a {
+.dg-pd__breadcrumb button {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   color: var(--dg-text);
   font-size: 0.88rem;
   font-weight: 620;
-  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
-.dg-pd__breadcrumb a:hover {
+.dg-pd__breadcrumb button:hover {
   color: var(--dg-red);
 }
 
@@ -35,6 +43,11 @@
   grid-template-columns: minmax(0, 1.5fr) minmax(320px, 1fr);
   gap: 2.25rem;
   align-items: start;
+}
+
+.dg-pd__gallery,
+.dg-pd__info {
+  min-width: 0;
 }
 
 /* =========================================================
@@ -267,6 +280,10 @@
   max-width: 68ch;
 }
 
+.dg-pd__section--description p + p {
+  margin-top: 0.9rem;
+}
+
 .dg-pd__spec-list {
   margin: 0;
   background: var(--dg-surface);
@@ -305,6 +322,7 @@
 .dg-pd__spec-list dd {
   color: var(--dg-ink);
   font-weight: 550;
+  overflow-wrap: anywhere;
 }
 
 /* =========================================================
@@ -339,7 +357,7 @@
 
 @media (max-width: 900px) {
   .dg-pd__layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .dg-pd__info-sticky {
@@ -361,8 +379,4 @@
     gap: 0.15rem;
     padding: 0.75rem 1rem;
   }
-}
-
-.dg-pd__section--description p + p {
-  margin-top: 0.9rem;
 }
