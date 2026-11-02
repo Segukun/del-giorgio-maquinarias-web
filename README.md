@@ -9,7 +9,7 @@ Sitio público y panel administrativo para el catálogo de maquinaria agrícola 
 - Cloud Firestore: catálogo, perfiles administrativos, actividad y estadísticas.
 - Firebase Storage: imágenes de maquinaria y marcas.
 - `functions/`: Cloud Functions con Node.js 24 para gestión de personal y agregación de métricas.
-- `firebase.json`: configuración del código de Functions. El repositorio no configura el hosting del frontend ni incluye reglas de Firestore/Storage.
+- `firebase.json`: configuración de Functions y Firebase Hosting (`frontend/dist`), con fallback SPA y encabezados SEO. El repositorio no incluye reglas de Firestore/Storage.
 
 El frontend utiliza el SDK de Firebase directamente y funciones callable para la gestión de personal. No hay una API Express ni una base MongoDB. Los roles administrativos existentes son `owner` y `staff`.
 
@@ -32,6 +32,7 @@ No guardar secretos en variables `VITE_*`: sus valores forman parte del frontend
 | Ruta | Contenido |
 | --- | --- |
 | `/` | Inicio, maquinaria destacada y marcas |
+| `/catalogo` | Catálogo con búsqueda y filtros; Nuevos y Usados son filtros por condición |
 | `/maquinaria/:id` | Ficha individual y consulta por WhatsApp |
 | `/contacto` | WhatsApp, email, dirección y mapa |
 | `/nosotros` | Presentación institucional, repuestos y postventa |
@@ -75,8 +76,13 @@ La salida de producción se genera en `frontend/dist/`. El servidor que aloje la
 
 - Confirmar el correo público definitivo mediante `VITE_CONTACT_EMAIL`.
 - Completar la historia y las fotografías reales del negocio cuando se proporcionen.
-- El buscador del header todavía no ejecuta búsquedas; `/nuevos` y `/usados` figuran en la navegación original pero no tienen rutas implementadas.
-- El lint global detecta un error previo en `src/hooks/useAdminSession.js` (`react-hooks/set-state-in-effect`); no se cambió Admin en esta tarea.
+- El lint global conserva errores previos en Admin, Header y Catálogo; están detallados en la revisión SEO.
 - El build advierte sobre el tamaño del paquete principal; queda pendiente separar más código por ruta.
 
 Ver [documentación del frontend](frontend/README.md) y [configuración de Contacto](frontend/CONTACTO.md).
+
+## SEO técnico
+
+Dominio canónico: `https://delgiorgiomaquinarias.com.ar`. Metadatos por ruta, encabezados HTML generados durante el build, sitemap de las ocho páginas estáticas, robots.txt, JSON-LD y noindex administrativo. Se mantiene React/Vite y el catálogo dinámico en Firestore.
+
+Ver [informe SEO, limitaciones y pasos de Search Console](frontend/SEO.md). El chequeo del build se ejecuta con `npm run check:seo` desde `frontend/`. Esta actualización no incluye deploy.

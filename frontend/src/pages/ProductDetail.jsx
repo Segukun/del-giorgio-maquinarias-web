@@ -4,6 +4,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/config.js";
 import { trackProductView, trackWhatsappClick } from "../firebase/tracking.js";
+import SEO from "../components/SEO.jsx";
+import { getProductMetadata } from "../seo/metadata.js";
 import "../styles/productdetail.css";
 
 const ProductDetail = () => {
@@ -46,9 +48,12 @@ const ProductDetail = () => {
     };
   }, [id]);
 
+  const seo = <SEO metadata={getProductMetadata({ id, product, loading, notFound })} />;
+
   if (loading) {
     return (
       <div className="dg-pd-state">
+        {seo}
         <p>Cargando máquina...</p>
       </div>
     );
@@ -57,6 +62,7 @@ const ProductDetail = () => {
   if (notFound || !product) {
     return (
       <div className="dg-pd-state">
+        {seo}
         <h1>Lo sentimos! No encontramos esta máquina</h1>
         <p>Puede que ya no esté disponible o el enlace sea incorrecto.</p>
         <a 
@@ -91,6 +97,7 @@ const ProductDetail = () => {
 
   return (
     <div className="dg-pd">
+      {seo}
       <nav className="dg-pd__breadcrumb" aria-label="Ruta de navegación">
         <button 
           onClick={() => navigate(-1)}

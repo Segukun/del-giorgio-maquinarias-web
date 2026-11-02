@@ -8,6 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "test": "node --test",
+    "check": "npm run check:seo",
+    "check:seo": "node scripts/verify-seo.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

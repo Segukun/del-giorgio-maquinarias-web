@@ -19,6 +19,8 @@ import Faq from "./pages/Faq.jsx";
 import About from "./pages/About.jsx";
 import Brands from "./pages/Brands.jsx";
 import PublicLayout from "./components/layout/PublicLayout.jsx";
+import RouteSEO from "./components/RouteSEO.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 import { useVisitorTracking } from "./hooks/useVisitorTracking.js";
 
@@ -30,6 +32,7 @@ const App = () => {
 
   return (
     <Router>
+      <RouteSEO />
       <AdminSessionProvider>
       <Routes>
 
@@ -106,6 +109,7 @@ const App = () => {
         <Route path="/admin/personal" element={<Navigate to="/admin/panel/personal" replace />} />
         <Route path="/admin/categorias" element={<Navigate to="/admin/panel/categorias" replace />} />
         <Route path="/admin/marcas" element={<Navigate to="/admin/panel/marcas" replace />} />
+        <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
       </Routes>
       </AdminSessionProvider>
     </Router>

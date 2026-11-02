@@ -15,12 +15,40 @@
   ],
   "hosting": {
     "public": "frontend/dist",
+    "cleanUrls": true,
+    "trailingSlash": false,
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
+    "headers": [
+      {
+        "regex": "^[/\\\\]admin(?:[/\\\\].*)?$",
+        "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      },
+      {
+        "regex": "^[/\\\\]__seo[/\\\\].*$",
+        "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      },
+      {
+        "regex": "^[/\\\\]sitemap\\.xml$",
+        "headers": [{ "key": "Content-Type", "value": "application/xml; charset=utf-8" }]
+      },
+      {
+        "regex": "^[/\\\\]robots\\.txt$",
+        "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
+      }
+    ],
     "rewrites": [
+      {
+        "source": "/maquinaria/**",
+        "destination": "/__seo/product.html"
+      },
+      {
+        "source": "/admin{,/**}",
+        "destination": "/__seo/admin.html"
+      },
       {
         "source": "**",
         "destination": "/index.html"

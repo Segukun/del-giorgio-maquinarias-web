@@ -1,13 +1,6 @@
-import { useEffect } from "react";
 import "../../styles/pages/information.css";
 
 export default function InformationPage({ title, introduction, updated = false, children }) {
-  useEffect(() => {
-    const previousTitle = document.title;
-    document.title = `${title} | Del Giorgio Maquinarias`;
-    return () => { document.title = previousTitle; };
-  }, [title]);
-
   return (
     <div className="dg-information">
       <header className="dg-information__heading">

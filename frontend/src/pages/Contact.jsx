@@ -1,16 +1,9 @@
-import { useEffect } from "react";
 import { FaWhatsapp, FaEnvelope, FaMapMarkerAlt, FaArrowRight, FaDirections } from "react-icons/fa";
 import { CONTACT_ADDRESS, CONTACT_EMAIL, CONTACT_EMAIL_IS_PLACEHOLDER, CONTACT_PHONE, MAP_EMBED_URL, MAPS_URL, whatsappUrl } from "../config/contact.js";
 import "../styles/hero.css";
 import "../styles/pages/contact.css";
 
 export default function Contact() {
-  useEffect(() => {
-    const previousTitle = document.title;
-    document.title = "Contacto | Del Giorgio Maquinarias";
-    return () => { document.title = previousTitle; };
-  }, []);
-
   return (
     <div className="dg-contact">
       <section className="dg-contact__hero" aria-labelledby="contact-title">

@@ -20,7 +20,7 @@ tests/                     Pruebas existentes de validación del catálogo
 
 ## Páginas informativas
 
-`Privacy`, `Terms`, `Faq`, `About` y `Brands` usan `InformationPage`, dentro del `PublicLayout` existente. Comparten colores, tipografía, ancho de lectura y adaptación móvil en `styles/pages/information.css`. Cada página actualiza el título del documento.
+`Privacy`, `Terms`, `Faq`, `About` y `Brands` usan `InformationPage`, dentro del `PublicLayout` existente. Comparten colores, tipografía, ancho de lectura y adaptación móvil en `styles/pages/information.css`. Los títulos y demás metadatos se gestionan mediante `RouteSEO` y la configuración central `src/seo/metadata.js`.
 
 - `/privacidad`: política basada en `useVisitorTracking.js`, `firebase/tracking.js`, `firebase/analytics.js` y `../functions/index.js`. Incluye Firestore, Storage, Authentication, Functions, ipapi, Maps y enlaces externos. Fecha de revisión: septiembre de 2026.
 - `/terminos`: ocho secciones para un catálogo con consultas directas, sin checkout.
@@ -57,4 +57,10 @@ npm run preview
 4. Revisar header, menú, logo, footer y páginas en 320, 390, 768 y 1440 px; comprobar el cambio de navegación cerca de 1100 px.
 5. Revisar consola y estados de carga de Marcas. Las peticiones al Firebase configurado y a ipapi requieren conexión; la navegación local usa los servicios configurados en `.env`.
 
-El buscador y los enlaces originales `/nuevos` y `/usados` siguen pendientes de implementación. El error de lint previo en `useAdminSession.js` y el aviso de tamaño de bundle se documentan en el [README principal](../README.md).
+El buscador y los enlaces Nuevos/Usados utilizan `/catalogo` con filtros en la query string. Todas esas variantes comparten el canonical de `/catalogo`.
+
+## SEO
+
+Ver [SEO.md](SEO.md) para el inventario de rutas, metadatos, canonicals, JSON-LD, configuración de Hosting, límites de la SPA y pasos posteriores en Search Console. Los archivos `public/robots.txt` y `public/sitemap.xml` se copian a la raíz de `dist`; el plugin `build/seoPlugin.js` genera los encabezados HTML por ruta.
+
+Después de `npm run build`, ejecutar `npm run check:seo`. `npm test` incluye comprobaciones de coherencia entre sitemap y rutas, dominio canónico, estados de fichas y escape seguro de metadatos. Los errores de lint previos y el aviso de tamaño de bundle se detallan en el informe SEO.
