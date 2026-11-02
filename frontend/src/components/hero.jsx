@@ -4,17 +4,17 @@ import "../styles/hero.css";
 
 const SLIDES = [
   {
-    image: "/hero-combine.jpg",
+    image: "/hero-1.webp",
     title: "DEL GIORGIO MAQUINARIAS",
     subtitle: "Maquinaria agrícola nueva y usada",
   },
   {
-    image: "/hero-tractor.jpg",
+    image: "/hero-2.webp",
     title: "TRACTORES DE ÚLTIMA GENERACIÓN",
     subtitle: "Potencia y tecnología para tu campo",
   },
   {
-    image: "/hero-used.jpg",
+    image: "/hero-3.webp",
     title: "EQUIPOS USADOS REVISADOS",
     subtitle: "Listos para trabajar desde el primer día",
   },
