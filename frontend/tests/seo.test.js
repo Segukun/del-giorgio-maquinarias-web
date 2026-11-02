@@ -18,7 +18,9 @@ test("el sitemap coincide con las rutas públicas reales y excluye filtros, alia
 });
 
 test("canonical siempre usa el dominio oficial y elimina filtros, fragmentos y barras finales", () => {
-  for (const url of ["/catalogo?q=tractor&marca=ERCA", "https://www.delgiorgiomaquinarias.com.ar/catalogo/", "https://del-giorgio-maquinarias.web.app/catalogo#filtros", "http://localhost:5173/catalogo?condicion=nuevo"]) {
+  assert.equal(SITE_URL, "https://www.delgiorgiomaquinarias.com.ar");
+  // Alternate hosts are test inputs only; generated metadata must always use WWW.
+  for (const url of ["/catalogo?q=tractor&marca=ERCA", "https://www.delgiorgiomaquinarias.com.ar/catalogo/", "https://delgiorgiomaquinarias.com.ar/catalogo/", "https://del-giorgio-maquinarias.web.app/catalogo#filtros", "http://localhost:5173/catalogo?condicion=nuevo"]) {
     assert.equal(canonicalUrl(url), `${SITE_URL}/catalogo`);
     assert.equal(getPageMetadata(url).canonical, `${SITE_URL}/catalogo`);
   }
@@ -35,6 +37,16 @@ test("páginas públicas tienen títulos y descripciones propios, sin metadata d
     const keys = entries.map(({ tag, attrs }) => `${tag}:${attrs?.name || attrs?.property || attrs?.rel || ""}`);
     assert.equal(new Set(keys).size, keys.length);
     assert.equal(entries.filter(({ tag }) => tag === "title").length, 1);
+    assert.equal(entries.find(({ attrs }) => attrs?.property === "og:url").attrs.content, page.canonical);
+    for (const entry of entries.filter(({ attrs }) => attrs?.property === "og:image" || attrs?.name === "twitter:image")) {
+      assert.equal(entry.attrs.content, `${SITE_URL}/brand/dg-logo.png`);
+    }
+    for (const node of page.structuredData["@graph"]) {
+      for (const url of [node.url, node["@id"], node.publisher?.["@id"], ...(node.itemListElement || []).map((item) => item.item)].filter(Boolean)) {
+        assert.equal(new URL(url).origin, SITE_URL);
+      }
+    }
+    assert.doesNotMatch(renderHead(page), /https?:\/\/delgiorgiomaquinarias\.com\.ar\b|localhost|del-giorgio-maquinarias\.web\.app/);
   }
 });
 
@@ -59,6 +71,14 @@ test("ficha publicada usa datos e imagen reales del documento, sin ofertas ni pr
   assert.equal(metadata.robots, "index, follow");
   assert.equal(metadata.imageWidth, undefined);
   assert.doesNotMatch(JSON.stringify(metadata.structuredData), /offers|price|rating|availability/);
+  assert.deepEqual(metadata.structuredData["@graph"][0].itemListElement.map((item) => item.item), [`${SITE_URL}/`, `${SITE_URL}/catalogo`, metadata.canonical]);
+  for (const image of ["/brand/dg-logo.png?version=1", "https://delgiorgiomaquinarias.com.ar/brand/dg-logo.png?version=1", `${SITE_URL}/brand/dg-logo.png?version=1`]) {
+    const ownImageMetadata = getProductMetadata({ id: product.id, product: { ...product, images: [image] } });
+    assert.equal(ownImageMetadata.image, `${SITE_URL}/brand/dg-logo.png?version=1`);
+    for (const entry of headEntries(ownImageMetadata).filter(({ attrs }) => attrs?.property === "og:image" || attrs?.name === "twitter:image")) {
+      assert.equal(entry.attrs.content, ownImageMetadata.image);
+    }
+  }
 });
 
 test("carga y cambio de ID no filtran metadata vieja; errores y pendientes quedan fuera del índice", () => {
@@ -87,6 +107,10 @@ test("escape de HTML y JSON-LD impide cerrar etiquetas con contenido de Firestor
 test("negocio reutiliza datos confirmados y omite email provisional y afirmaciones no verificadas", () => {
   const business = businessSchema("contacto@example.com");
   assert.equal(business.email, undefined);
+  assert.equal(business.url, `${SITE_URL}/`);
+  assert.equal(business["@id"], `${SITE_URL}/#negocio`);
+  assert.equal(business.logo, SITE_IMAGE);
+  assert.equal(business.image, SITE_IMAGE);
   assert.equal(business.telephone, "+542281301249");
   assert.equal(business.address.streetAddress, "Constitución 345");
   assert.equal(business.sameAs.length, 2);

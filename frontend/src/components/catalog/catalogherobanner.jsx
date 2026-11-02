@@ -4,7 +4,7 @@ const CatalogHeroBanner = ({ title, subtitle }) => {
   return (
     <section
       className="dg-catalog-hero"
-      style={{ backgroundImage: "url(/category-cosechadora.jpg)" }}
+      style={{ backgroundImage: "url(/hero-combine.webp)" }}
     >
       <div className="dg-catalog-hero__overlay" />
       <div className="dg-catalog-hero__content">

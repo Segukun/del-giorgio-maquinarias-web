@@ -1,6 +1,6 @@
 import { CONTACT_LOCATION, FACEBOOK_URL, INSTAGRAM_URL, MAPS_PROFILE_URL, WHATSAPP_NUMBER } from "../config/contact.js";
 
-export const SITE_URL = "https://delgiorgiomaquinarias.com.ar";
+export const SITE_URL = "https://www.delgiorgiomaquinarias.com.ar";
 export const SITE_NAME = "Del Giorgio Maquinarias";
 export const SITE_IMAGE = `${SITE_URL}/brand/dg-logo.png`;
 export const INDEX = "index, follow";
@@ -149,6 +149,9 @@ function publicImage(value) {
   try {
     const url = new URL(value, SITE_URL);
     if (url.protocol !== "https:" || /^(localhost|127\.0\.0\.1|\[::1\]|del-giorgio-maquinarias\.web\.app)$/i.test(url.hostname)) return null;
+    // Only normalize our own redirected host; preserve external Storage URLs and tokens.
+    const site = new URL(SITE_URL);
+    if (url.hostname === site.hostname.replace(/^www\./, "")) url.host = site.host;
     return url.href;
   } catch { return null; }
 }

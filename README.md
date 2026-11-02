@@ -83,6 +83,6 @@ Ver [documentación del frontend](frontend/README.md) y [configuración de Conta
 
 ## SEO técnico
 
-Dominio canónico: `https://delgiorgiomaquinarias.com.ar`. Metadatos por ruta, encabezados HTML generados durante el build, sitemap de las ocho páginas estáticas, robots.txt, JSON-LD y noindex administrativo. Se mantiene React/Vite y el catálogo dinámico en Firestore.
+Dominio canónico: `https://www.delgiorgiomaquinarias.com.ar`. Metadatos por ruta, encabezados HTML generados durante el build, sitemap de las ocho páginas estáticas, robots.txt, JSON-LD y noindex administrativo. Se mantiene React/Vite y el catálogo dinámico en Firestore.
 
 Ver [informe SEO, limitaciones y pasos de Search Console](frontend/SEO.md). El chequeo del build se ejecuta con `npm run check:seo` desde `frontend/`. Esta actualización no incluye deploy.

@@ -28,7 +28,7 @@ import "../../styles/admin/layout.css";
 import "../../styles/admin/dashboard.css";
 
 const TABS = ["Vista General", "Alcance", "Interactividad", "Audiencia"];
-const PUBLIC_SITE_URL = "https://delgiorgiomaquinarias.com"; // ajustar a tu dominio real
+const PUBLIC_SITE_URL = "https://www.delgiorgiomaquinarias.com.ar";
 
 const DashboardAdmin = () => {
   const navigate = useNavigate();

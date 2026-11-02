@@ -1,6 +1,8 @@
 # SEO técnico de Del Giorgio Maquinarias
 
-Revisión local: 2 de noviembre de 2026. Dominio canónico: **https://delgiorgiomaquinarias.com.ar**. Esta implementación no fue desplegada ni modifica DNS, dominios personalizados o servicios remotos.
+Revisión local: 2 de noviembre de 2026. Dominio canónico: **https://www.delgiorgiomaquinarias.com.ar**. Esta implementación no fue desplegada ni modifica DNS, dominios personalizados o servicios remotos.
+
+El dominio con `www` coincide con el dominio conectado en Firebase Hosting según la configuración confirmada por el propietario. La redirección existente del dominio sin `www` al dominio con `www` permanece intacta. El SEO usa siempre el destino final, incluso cuando la visita se origina en otro host.
 
 ## Archivos creados y modificados
 
@@ -66,14 +68,14 @@ La ruta `/maquinaria/:id` sí existe y utiliza el ID real del documento Firestor
 El sitemap contiene exactamente estas ocho URLs, sin `lastmod` ficticios:
 
 ```text
-https://delgiorgiomaquinarias.com.ar/
-https://delgiorgiomaquinarias.com.ar/catalogo
-https://delgiorgiomaquinarias.com.ar/marcas
-https://delgiorgiomaquinarias.com.ar/nosotros
-https://delgiorgiomaquinarias.com.ar/contacto
-https://delgiorgiomaquinarias.com.ar/preguntas-frecuentes
-https://delgiorgiomaquinarias.com.ar/privacidad
-https://delgiorgiomaquinarias.com.ar/terminos
+https://www.delgiorgiomaquinarias.com.ar/
+https://www.delgiorgiomaquinarias.com.ar/catalogo
+https://www.delgiorgiomaquinarias.com.ar/marcas
+https://www.delgiorgiomaquinarias.com.ar/nosotros
+https://www.delgiorgiomaquinarias.com.ar/contacto
+https://www.delgiorgiomaquinarias.com.ar/preguntas-frecuentes
+https://www.delgiorgiomaquinarias.com.ar/privacidad
+https://www.delgiorgiomaquinarias.com.ar/terminos
 ```
 
 Contenido completo de `public/robots.txt`:
@@ -82,7 +84,7 @@ Contenido completo de `public/robots.txt`:
 User-agent: *
 Allow: /
 
-Sitemap: https://delgiorgiomaquinarias.com.ar/sitemap.xml
+Sitemap: https://www.delgiorgiomaquinarias.com.ar/sitemap.xml
 ```
 
 Vite copia ambos archivos a `dist/robots.txt` y `dist/sitemap.xml`. No se bloquean JS, CSS, imágenes ni recursos de Firebase. Las pruebas comparan el sitemap y la configuración SEO con las rutas reales de `App.jsx` para detectar olvidos al agregar páginas.
@@ -119,6 +121,8 @@ Se generan `og:title`, `og:description`, `og:url` (cuando hay canonical), `og:ty
 
 La imagen institucional es el PNG real `/brand/dg-logo.png`, de 1254 × 1254 px. Se utiliza `twitter:card=summary`, adecuado al logo cuadrado; no se afirma tener una imagen panorámica. Las fichas usan su primera imagen HTTPS válida disponible y omiten dimensiones que no estén verificadas. Si falta una imagen válida, reutilizan el logo. Se descartan URLs locales, esquemas inseguros y el dominio alternativo de Hosting indicado en el pedido.
 
+Las imágenes del dominio propio se publican en la metadata con `www`, conservando ruta y parámetros. Las URLs externas de Firebase Storage se mantienen intactas, incluidos sus tokens. No se modifican documentos ni imágenes almacenadas.
+
 El favicon original `frontend/dmg-logo.ico` se conserva. Vite lo publica con hash bajo `/assets/` y transforma su referencia en todos los HTML generados. No se usa el SVG de Vite como favicon ni se inventan iconos Apple/PWA inexistentes. Se verificó la existencia en `dist` del favicon y del PNG institucional.
 
 ## JSON-LD
@@ -150,7 +154,7 @@ Limitaciones restantes:
 - El contenido visible aún necesita JavaScript; generar encabezados no elimina esta dependencia.
 - Los bots sociales que no ejecutan JavaScript verán metadata específica en páginas estáticas, pero una vista genérica en maquinaria dinámica. Las fichas específicas se actualizan cuando React obtiene Firestore.
 - Las rutas inexistentes y fichas borradas pueden responder HTTP 200 por el fallback SPA. React muestra el estado de error y aplica `noindex`; no se implementó un servidor que devuelva 404 dinámicos.
-- Canonical es una señal, no una redirección de `www` o del dominio alternativo. Google decide la URL seleccionada; no se modificó DNS/Hosting custom domains para forzarlo.
+- Canonical es una señal y no configura redirecciones. El SEO coincide con el destino `www` de la redirección existente, confirmada por el propietario; Google decide la URL seleccionada. No se modificó DNS ni Hosting custom domains.
 - Las imágenes, Firestore y recursos públicos deben seguir accesibles sin autenticación para que el render del catálogo pueda completarse.
 - No hay garantía automática de indexación ni resultados enriquecidos por agregar etiquetas.
 
@@ -167,6 +171,8 @@ npm run lint
 
 `check` ejecuta `check:seo`, que inspecciona el build real: ocho HTML públicos, trece administrativos, canonicals, ausencia de noindex público, imagen, favicon, JSON-LD, archivos estáticos y configuración de Hosting. Las once pruebas incluyen las tres existentes de catálogo y ocho casos de SEO (rutas, filtros, datos de productos, estados no indexables y escape de HTML/JSON-LD).
 
+Las verificaciones exigen el dominio `www` en el sitemap, robots, canonical, Open Graph, Twitter y URLs internas del JSON-LD. Las referencias al host sin `www`, localhost y el host alternativo de Firebase solo permanecen como entradas de pruebas o patrones de rechazo; nunca se emiten como URLs SEO. También se comprueba que las imágenes de Storage no cambien y que las imágenes propias se normalicen al dominio final.
+
 Se probaron respuestas HTTP mediante Firebase Hosting Emulator con un proyecto demo, sin desplegar: treinta rutas y variantes, más el HTML compartido de maquinaria y el favicon. Incluyen las ocho páginas públicas, las trece rutas administrativas y una subruta administrativa futura, filtros del catálogo, redirecciones de `.html` y barra final, logo, robots y sitemap. Se confirmaron canonicals, MIME types y `X-Robots-Tag`, sin consultar Firestore. El navegador automatizado no estuvo disponible, por lo que queda pendiente la comprobación visual del DOM tras navegación SPA y de una ficha real en Search Console.
 
 Resultados finales: `npm run build` completado, `npm test` con **11/11 pruebas aprobadas**, `npm run check:seo` aprobado y ESLint sobre los archivos JavaScript modificados sin errores. El lint global tiene cinco errores anteriores a esta tarea: `ProductFormModal.jsx:91`, `header.jsx:18` y `:35`, `useAdminSession.js:34`, y `catalog.jsx:10`. La nueva implementación no agrega errores. El build conserva un aviso por tamaño del paquete principal (aproximadamente 785 kB, 225 kB comprimidos).
@@ -174,7 +180,7 @@ Resultados finales: `npm run build` completado, `npm test` con **11/11 pruebas a
 Después de revisar y publicar manualmente:
 
 1. Comprobar `/robots.txt`, `/sitemap.xml`, Home, Contacto, Catálogo, una ficha publicada y `/admin/login` en el dominio oficial. Inspeccionar HTML inicial y DOM renderizado. Confirmar canonical y las cabeceras administrativas.
-2. Verificar o usar la propiedad del dominio en Google Search Console. Enviar `https://delgiorgiomaquinarias.com.ar/sitemap.xml` e inspeccionar URLs representativas. Si la propiedad no está verificada, completar personalmente el método de verificación correspondiente.
+2. Verificar o usar la propiedad del dominio en Google Search Console. Enviar `https://www.delgiorgiomaquinarias.com.ar/sitemap.xml` e inspeccionar URLs representativas. Si la propiedad no está verificada, completar personalmente el método de verificación correspondiente.
 3. Probar Home/Contacto en Rich Results Test y el JSON-LD en Schema Markup Validator. Revisar la URL canónica seleccionada por Google y solicitar indexación donde corresponda.
 4. Comprobar las vistas previas sociales y renovar sus cachés después de publicar. Las fichas dinámicas siguen teniendo la limitación explicada arriba.
 5. Confirmar `VITE_CONTACT_EMAIL` antes del build de publicación. No hay necesidad de agregar una variable de dominio: el dominio canónico es explícito y único.
