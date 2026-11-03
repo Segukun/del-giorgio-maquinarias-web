@@ -127,7 +127,7 @@ El favicon original `frontend/dmg-logo.ico` se conserva. Vite lo publica con has
 
 ## JSON-LD
 
-- `LocalBusiness` en Inicio y Contacto: nombre, dominio, logo, imagen, teléfono público ya existente `+542281301249`, dirección centralizada, código postal, país, enlace de Maps y `sameAs` para Instagram/Facebook. Instagram se normaliza sin parámetros de campaña. El email reutiliza el correo confirmado `delgiorgiomaquinarias@yahoo.com.ar` o el reemplazo configurado en `VITE_CONTACT_EMAIL`; se excluyen direcciones de ejemplo.
+- `LocalBusiness` en Inicio y Contacto: nombre, dominio, logo, imagen, teléfono público confirmado `+5492281556067`, dirección centralizada, código postal, país, enlace de Maps y `sameAs` para Instagram/Facebook. Instagram se normaliza sin parámetros de campaña. El email reutiliza el correo confirmado `delgiorgiomaquinarias@yahoo.com.ar` o el reemplazo configurado en `VITE_CONTACT_EMAIL`; se excluyen direcciones de ejemplo.
 - `WebSite` en Inicio, con nombre, URL, idioma y referencia al negocio.
 - `BreadcrumbList` en páginas secundarias y fichas publicadas, con URLs canónicas.
 

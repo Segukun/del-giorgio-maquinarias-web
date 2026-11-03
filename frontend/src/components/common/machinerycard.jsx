@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { trackWhatsappClick } from "../../firebase/tracking.js";
+import { whatsappUrl } from "../../config/contact.js";
 import "../../styles/common/machinerycard.css";
 
 const CONDITION_LABELS = {
@@ -11,9 +12,7 @@ const MachineryCard = ({ product }) => {
   const condition = CONDITION_LABELS[product.condition] ?? CONDITION_LABELS.Usado;
   const hoursText = product.condition === "Usado" ? product.hoursTag : "Nuevo";
 
-  const whatsappHref =
-    "https://wa.me/542281301249?text=" +
-    encodeURIComponent(`Hola, quisiera consultar por ${product.name}.`);
+  const whatsappHref = whatsappUrl(`Hola, quisiera consultar por ${product.name}.`);
 
   return (
     <article className="dg-machinery-card">

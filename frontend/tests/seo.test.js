@@ -111,7 +111,7 @@ test("negocio reutiliza datos confirmados y omite email provisional y afirmacion
   assert.equal(business["@id"], `${SITE_URL}/#negocio`);
   assert.equal(business.logo, SITE_IMAGE);
   assert.equal(business.image, SITE_IMAGE);
-  assert.equal(business.telephone, "+542281301249");
+  assert.equal(business.telephone, "+5492281556067");
   assert.equal(business.address.streetAddress, "Constitución 345");
   assert.equal(business.sameAs.length, 2);
   assert.equal(business.sameAs[0], "https://www.instagram.com/delgiorgiomaquinarias");

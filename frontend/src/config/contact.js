@@ -1,6 +1,6 @@
-// Source: the original floating WhatsApp button. Keep every public CTA in sync.
-export const WHATSAPP_NUMBER = "542281301249";
-export const CONTACT_PHONE = `+${WHATSAPP_NUMBER.slice(0, 2)} ${WHATSAPP_NUMBER.slice(2, 6)} ${WHATSAPP_NUMBER.slice(6)}`;
+// Confirmed business WhatsApp. Keep every public CTA in sync.
+export const WHATSAPP_NUMBER = "5492281556067";
+export const CONTACT_PHONE = `+${WHATSAPP_NUMBER.slice(0, 2)} ${WHATSAPP_NUMBER.slice(2, 3)} ${WHATSAPP_NUMBER.slice(3, 7)} ${WHATSAPP_NUMBER.slice(7, 9)}-${WHATSAPP_NUMBER.slice(9)}`;
 // Confirmed company email; an environment override remains available for future changes.
 export const CONTACT_EMAIL = import.meta.env?.VITE_CONTACT_EMAIL?.trim() || "delgiorgiomaquinarias@yahoo.com.ar";
 export const CONTACT_EMAIL_IS_PLACEHOLDER = /@example\.com$/i.test(CONTACT_EMAIL);

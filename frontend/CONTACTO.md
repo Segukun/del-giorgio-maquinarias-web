@@ -6,7 +6,7 @@ La página incluye únicamente contacto directo y ubicación: WhatsApp, email y 
 
 ## Datos compartidos
 
-- WhatsApp: **542281301249**, tomado del botón flotante original. Home, destacados, detalle, Contacto y footer usan `whatsappUrl` de `src/config/contact.js`.
+- WhatsApp confirmado: **+54 9 2281 55-6067** (`5492281556067` en enlaces). Home, tarjetas de maquinaria, destacados, detalle, Contacto, footer y botón flotante usan `whatsappUrl` de `src/config/contact.js`.
 - Dirección: **Constitución 345, Benito Juárez, Buenos Aires 7020**. El mapa y las indicaciones apuntan a las coordenadas **-37.6756492, -59.817902**, verificadas en el [perfil del negocio en Google Maps](https://maps.app.goo.gl/NpyX7QCTfPEJuLAK7). Esto evita que la búsqueda textual seleccione una dirección en la ciudad de Buenos Aires.
 - Email confirmado: **delgiorgiomaquinarias@yahoo.com.ar**. Contacto y el footer lo muestran con enlace `mailto:`, sin aviso de correo provisional. Puede reemplazarse mediante `VITE_CONTACT_EMAIL` en `frontend/.env`; reiniciar Vite o recompilar después de cambiarlo.
 

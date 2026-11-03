@@ -1,4 +1,5 @@
 import { FaWhatsapp } from "react-icons/fa";
+import { whatsappUrl } from "../../config/contact.js";
 import "../../styles/catalog/productcard.css";
 
 const CONDITION_LABELS = {
@@ -9,9 +10,7 @@ const CONDITION_LABELS = {
 const ProductCard = ({ product }) => {
   const condition = CONDITION_LABELS[product.condition];
 
-  const whatsappHref =
-    "https://wa.me/5493468123456?text=" +
-    encodeURIComponent(`Hola, quisiera consultar por ${product.name}.`);
+  const whatsappHref = whatsappUrl(`Hola, quisiera consultar por ${product.name}.`);
 
   return (
     <article className="dg-catalog-card">
