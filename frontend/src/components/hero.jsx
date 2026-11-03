@@ -10,8 +10,8 @@ const SLIDES = [
   },
   {
     image: "/hero-2.webp",
-    title: "TRACTORES DE ÚLTIMA GENERACIÓN",
-    subtitle: "Potencia y tecnología para tu campo",
+    title: "RESPALDO DESPUÉS DE CADA COMPRA",
+    subtitle: "Repuestos y servicio postventa para mantener tu maquinaria siempre en marcha.",
   },
   {
     image: "/hero-3.webp",
