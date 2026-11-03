@@ -1,6 +1,6 @@
 # Frontend de Del Giorgio Maquinarias
 
-Aplicación React + Vite. Las rutas públicas y administrativas se declaran en `src/App.jsx`. `src/main.jsx` valida las variables públicas de Firebase antes de montar la aplicación.
+Aplicación React + Vite. Las rutas públicas y administrativas se declaran en `src/App.jsx`. `src/main.jsx` monta React sin esperar Auth ni métricas; la administración y los servicios de Firebase se cargan cuando se necesitan. Ver [BOOTSTRAP.md](BOOTSTRAP.md) para el diagnóstico de Search Console, el aislamiento de servicios y sus verificaciones.
 
 ## Estructura
 
@@ -14,8 +14,9 @@ src/pages/admin/           Pantallas administrativas
 src/config/contact.js      WhatsApp, email, dirección, Maps y redes oficiales
 src/firebase/              SDK, servicios de catálogo, eventos y estadísticas
 src/hooks/                 Sesión administrativa y tracking de visitantes
+src/runtime/               Bootstrap, diagnóstico, sesión y métricas opcionales
 src/styles/                Estilos globales, públicos y administrativos
-tests/                     Pruebas existentes de validación del catálogo
+tests/                     Validación de catálogo, SEO, bootstrap y render de componentes
 ```
 
 ## Páginas informativas
@@ -28,7 +29,7 @@ tests/                     Pruebas existentes de validación del catálogo
 - `/nosotros`: solo información confirmada sobre maquinaria, repuestos, postventa y ubicación; no se agregó una historia ni fotografías ficticias.
 - `/marcas`: reutiliza `fetchBrands()`, filtra por `isActive` y muestra imágenes existentes. Incluye estados de carga, error y catálogo vacío.
 
-`ContactLinks` utiliza la misma configuración que Contacto y el botón flotante. No expone el correo provisional como un canal real. No hay backend de recepción de consultas desde la web.
+`ContactLinks` utiliza la misma configuración que Contacto y el footer: el correo confirmado es `delgiorgiomaquinarias@yahoo.com.ar`, con enlace `mailto:`. No hay backend de recepción de consultas desde la web.
 
 ## Header y footer
 
@@ -46,6 +47,7 @@ npm run dev -- --host 127.0.0.1
 npm run lint
 npm test
 npm run build
+npm run check
 npm run preview
 ```
 
@@ -63,4 +65,4 @@ El buscador y los enlaces Nuevos/Usados utilizan `/catalogo` con filtros en la q
 
 Ver [SEO.md](SEO.md) para el inventario de rutas, metadatos, canonicals, JSON-LD, configuración de Hosting, límites de la SPA y pasos posteriores en Search Console. Los archivos `public/robots.txt` y `public/sitemap.xml` se copian a la raíz de `dist`; el plugin `build/seoPlugin.js` genera los encabezados HTML por ruta.
 
-Después de `npm run build`, ejecutar `npm run check:seo`. `npm test` incluye comprobaciones de coherencia entre sitemap y rutas, dominio canónico, estados de fichas y escape seguro de metadatos. Los errores de lint previos y el aviso de tamaño de bundle se detallan en el informe SEO.
+Después de `npm run build`, ejecutar `npm run check`: verifica SEO y dependencias del bootstrap. `npm test` incluye coherencia de rutas, metadata, fichas, escape seguro, restricciones de almacenamiento y render de las páginas públicas. Ver [BOOTSTRAP.md](BOOTSTRAP.md) para el alcance y los límites de estas pruebas.

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import InformationPage from "../components/layout/InformationPage.jsx";
-import { fetchBrands } from "../firebase/brands.js";
+import { fetchBrands } from "../firebase/publicCatalog.js";
 
 export default function Brands() {
   const [brands, setBrands] = useState([]);

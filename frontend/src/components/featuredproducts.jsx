@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { whatsappUrl } from "../config/contact.js";
-import { fetchProducts } from "../firebase/products.js";
+import { fetchProducts } from "../firebase/publicCatalog.js";
 import { trackWhatsappClick } from "../firebase/tracking.js";
 import "../styles/featuredproducts.css";
 

@@ -23,7 +23,7 @@ Copy-Item .env.example .env # solo si todavía no existe .env
 npm run dev -- --host 127.0.0.1
 ```
 
-Completar la configuración pública de Firebase en `.env`. `VITE_CONTACT_EMAIL` contiene el correo público confirmado; si falta, Contacto y el footer indican un correo provisional, sin habilitar un enlace de envío. Las páginas informativas ofrecen los otros canales hasta que haya un correo configurado. Reiniciar Vite después de cambiar el entorno.
+Completar la configuración pública de Firebase en `.env`. Contacto, el footer y las páginas informativas usan el correo confirmado `delgiorgiomaquinarias@yahoo.com.ar`, con enlace `mailto:`. `VITE_CONTACT_EMAIL` permite reemplazarlo si cambia en el futuro; reiniciar Vite o recompilar después de modificar el entorno.
 
 No guardar secretos en variables `VITE_*`: sus valores forman parte del frontend distribuido. La configuración de contacto y los enlaces oficiales están centralizados en `frontend/src/config/contact.js`.
 
@@ -44,7 +44,7 @@ No guardar secretos en variables `VITE_*`: sus valores forman parte del frontend
 
 Las páginas públicas comparten `PublicLayout`, Header, Footer y botón flotante de WhatsApp. Las nuevas páginas informativas comparten `InformationPage` y sus estilos. El sitio no realiza ventas ni pagos online y los visitantes no crean cuentas.
 
-El panel tiene login y recuperación de acceso, y rutas bajo `/admin/panel/` para inicio, productos, personal, categorías, marcas y cuenta. Su comportamiento no se modificó en esta actualización pública.
+El panel tiene login y recuperación de acceso, y rutas bajo `/admin/panel/` para inicio, productos, personal, categorías, marcas y cuenta. Se carga al entrar a las rutas administrativas, conservando Auth y sus controles de acceso; los fallos de sesión quedan contenidos en esa sección.
 
 ## Estadísticas implementadas
 
@@ -56,7 +56,7 @@ Las métricas son propias, guardadas en Firestore. No se integra el SDK de Fireb
 - `productStats`: cantidad de visualizaciones y última vista por maquinaria.
 - El panel muestra comparaciones por período, maquinaria más vista y visualizaciones recientes.
 
-El navegador guarda `dg_session_id` y `dg_session_created` en `sessionStorage`. La consulta a `https://ipapi.co/json/` estima ciudad y provincia a partir de la conexión; estos son los únicos campos de esa respuesta conservados por el registro de sesión. La dirección IP llega al proveedor, pero no se guarda como campo en `sessions`.
+El navegador guarda `dg_session_id` y `dg_session_created` en `sessionStorage`. Si ese almacenamiento no está disponible, se omiten las métricas y la web continúa funcionando. La consulta a `https://ipapi.co/json/` estima ciudad y provincia a partir de la conexión; estos son los únicos campos de esa respuesta conservados por el registro de sesión. La dirección IP llega al proveedor, pero no se guarda como campo en `sessions`.
 
 Las vistas se registran desde `ProductDetail`; los clics a WhatsApp desde `featuredproducts` y `ProductDetail`. Los demás enlaces a WhatsApp no registran ese evento. No se miden todas las páginas, tiempo de permanencia, contenido de mensajes ni ventas. Un identificador de sesión no equivale a una persona única. No hay una tarea de borrado automático de estos registros en el código del repositorio.
 
@@ -74,10 +74,9 @@ La salida de producción se genera en `frontend/dist/`. El servidor que aloje la
 
 ## Pendientes existentes
 
-- Confirmar el correo público definitivo mediante `VITE_CONTACT_EMAIL`.
 - Completar la historia y las fotografías reales del negocio cuando se proporcionen.
-- El lint global conserva errores previos en Admin, Header y Catálogo; están detallados en la revisión SEO.
-- El build advierte sobre el tamaño del paquete principal; queda pendiente separar más código por ruta.
+- El lint global conserva errores previos en Admin y Header; están detallados en la revisión SEO.
+- El build advierte sobre el tamaño del SDK compartido de Firebase. La administración ya se carga por separado de las páginas públicas.
 
 Ver [documentación del frontend](frontend/README.md) y [configuración de Contacto](frontend/CONTACTO.md).
 
@@ -85,4 +84,4 @@ Ver [documentación del frontend](frontend/README.md) y [configuración de Conta
 
 Dominio canónico: `https://www.delgiorgiomaquinarias.com.ar`. Metadatos por ruta, encabezados HTML generados durante el build, sitemap de las ocho páginas estáticas, robots.txt, JSON-LD y noindex administrativo. Se mantiene React/Vite y el catálogo dinámico en Firestore.
 
-Ver [informe SEO, limitaciones y pasos de Search Console](frontend/SEO.md). El chequeo del build se ejecuta con `npm run check:seo` desde `frontend/`. Esta actualización no incluye deploy.
+Ver [informe SEO, limitaciones y pasos de Search Console](frontend/SEO.md) y [diagnóstico del bootstrap público](frontend/BOOTSTRAP.md). El chequeo del build se ejecuta con `npm run check` desde `frontend/`: valida SEO y aislamiento de dependencias administrativas. Esta actualización no incluye deploy.

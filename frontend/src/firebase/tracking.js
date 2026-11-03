@@ -1,23 +1,30 @@
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "./config";
-import { getOrCreateSessionId } from "../hooks/useVisitorTracking";
+import { getOrCreateSessionId } from "../runtime/session.js";
+import { runOptionalTask } from "../runtime/errors.js";
+import { withTimeout } from "../runtime/timeout.js";
 
-export const trackProductView = async (productId, productName) => {
-  await addDoc(collection(db, "events"), {
-    sessionId: getOrCreateSessionId(),
+async function writeMetric(name, data) {
+  const writer = await import("./metricsWriter.js");
+  return writer.writeMetric(name, data);
+}
+
+export const trackProductView = (productId, productName) => runOptionalTask("tracking.product-view", async () => {
+  const sessionId = getOrCreateSessionId();
+  if (!sessionId) return;
+  await withTimeout(() => writeMetric("events", {
+    sessionId,
     type: "product_view",
     productId,
     productName,
-    createdAt: serverTimestamp(),
-  });
-};
+  }));
+});
 
-export const trackWhatsappClick = async () => {
-  await addDoc(collection(db, "events"), {
-    sessionId: getOrCreateSessionId(),
+export const trackWhatsappClick = () => runOptionalTask("tracking.whatsapp", async () => {
+  const sessionId = getOrCreateSessionId();
+  if (!sessionId) return;
+  await withTimeout(() => writeMetric("events", {
+    sessionId,
     type: "whatsapp_click",
     productId: null,
     productName: null,
-    createdAt: serverTimestamp(),
-  });
-};
+  }));
+});

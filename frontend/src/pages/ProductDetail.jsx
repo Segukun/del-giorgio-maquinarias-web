@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { whatsappUrl } from "../config/contact.js";
 import { useParams, useNavigate } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase/config.js";
+import { fetchProduct } from "../firebase/publicCatalog.js";
 import { trackProductView, trackWhatsappClick } from "../firebase/tracking.js";
 import SEO from "../components/SEO.jsx";
 import { getProductMetadata } from "../seo/metadata.js";
@@ -23,13 +22,12 @@ const ProductDetail = () => {
       setLoading(true);
       setNotFound(false);
       try {
-        const snap = await getDoc(doc(db, "products", id));
+        const data = await fetchProduct(id);
         if (!isMounted) return;
-        if (!snap.exists()) {
+        if (!data) {
           setNotFound(true);
           return;
         }
-        const data = { id: snap.id, ...snap.data() };
         setProduct(data);
         setActiveImage(0);
         trackProductView(data.id, data.name);

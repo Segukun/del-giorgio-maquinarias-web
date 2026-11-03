@@ -7,7 +7,6 @@ import FiltersModal from "../components/catalog/filtersmodal";
 import ResultsToolbar from "../components/catalog/resultstoolbar";
 import ProductGrid from "../components/catalog/productgrid";
 import {
-  EMPTY_FILTERS,
   parseFiltersFromParams,
   filtersToSearchParams,
   matchSearchToEntities,
@@ -15,7 +14,9 @@ import {
   computeExtraFieldOptions,
   computeAvailableHourPresets,
 } from "../utils/catalogFilters.js";
-import { fetchProducts, fetchActiveBrands, fetchActiveCategories } from "../firebase/products.js";
+import { fetchProducts, fetchActiveBrands, fetchActiveCategories } from "../firebase/publicCatalog.js";
+import { reportRuntimeError } from "../runtime/errors.js";
+import { withTimeout } from "../runtime/timeout.js";
 import "../styles/pages/catalog.css";
 
 const PAGE_SIZE = 8;
@@ -27,26 +28,34 @@ const Catalog = () => {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   const [sort, setSort] = useState("recientes");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   useEffect(() => {
+    let active = true;
     const load = async () => {
-      setLoading(true);
-      const [productsData, categoriesData, brandsData] = await Promise.all([
-        fetchProducts(),
-        fetchActiveCategories(),
-        fetchActiveBrands(),
-      ]);
-      setAllProducts(productsData.filter((p) => p.status === "Publicado"));
-      setCategories(categoriesData);
-      setBrands(brandsData);
-      setLoading(false);
+      try {
+        const [productsData, categoriesData, brandsData] = await withTimeout(() => Promise.all([
+          fetchProducts(), fetchActiveCategories(), fetchActiveBrands(),
+        ]));
+        if (!active) return;
+        setAllProducts(productsData.filter((p) => p.status === "Publicado"));
+        setCategories(categoriesData);
+        setBrands(brandsData);
+      } catch (error) {
+        reportRuntimeError("catalog.read", error);
+        if (active) setError(true);
+      } finally {
+        if (active) setLoading(false);
+      }
     };
-    load();
-  }, []);
+    void load();
+    return () => { active = false; };
+  }, [attempt]);
 
   // La URL es la única fuente de verdad: los filtros se recalculan en cada
   // render a partir de searchParams, así que nunca quedan desincronizados
@@ -110,11 +119,22 @@ const Catalog = () => {
     filters.hours.length +
     Object.values(filters.extra).reduce((sum, values) => sum + values.length, 0);
 
-  if (loading) {
+  if (loading || error) {
     return (
       <div className="dg-page">
         <main>
-          <p style={{ padding: "3rem", textAlign: "center" }}>Cargando catálogo...</p>
+          <CatalogHeroBanner title="Catálogo de maquinaria" subtitle="Encontrá la maquinaria ideal para tu campo." />
+          <div style={{ padding: "3rem", textAlign: "center" }}>
+            {loading ? <p role="status">Cargando catálogo...</p> : <>
+              <p role="alert">No pudimos cargar la maquinaria en este momento.</p>
+              <button type="button" className="dg-btn dg-btn--primary" onClick={() => {
+                setLoading(true);
+                setError(false);
+                setAttempt((value) => value + 1);
+              }}>Reintentar</button>
+              <p>También podés <a href="/contacto">consultarnos por los equipos disponibles</a>.</p>
+            </>}
+          </div>
         </main>
       </div>
     );

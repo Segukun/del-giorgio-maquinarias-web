@@ -26,7 +26,7 @@ Rutas relativas a la raíz del repositorio. No se modificaron dependencias ni ar
 | --- | --- |
 | `frontend/index.html` | Fallback público correcto, bloque SEO administrado y referencia al favicon existente. |
 | `frontend/vite.config.js` | Registro del plugin SEO local. |
-| `frontend/package.json` | Comando `check:seo` y alias `check`, sin nuevas dependencias. |
+| `frontend/package.json` | Comandos `check:seo` y `check:bootstrap`, ejecutados por `check`, sin nuevas dependencias. |
 | `frontend/src/App.jsx` | Integración de RouteSEO y estado para rutas desconocidas. |
 | `frontend/src/pages/ProductDetail.jsx` | Metadata de la ficha con los datos de la consulta existente. |
 | `frontend/src/pages/Contact.jsx` | Eliminación del efecto de título que competía con el sistema central. |
@@ -127,7 +127,7 @@ El favicon original `frontend/dmg-logo.ico` se conserva. Vite lo publica con has
 
 ## JSON-LD
 
-- `LocalBusiness` en Inicio y Contacto: nombre, dominio, logo, imagen, teléfono público ya existente `+542281301249`, dirección centralizada, código postal, país, enlace de Maps y `sameAs` para Instagram/Facebook. Instagram se normaliza sin parámetros de campaña. El email solo se incluye si está configurado y no es el provisional `example.com`.
+- `LocalBusiness` en Inicio y Contacto: nombre, dominio, logo, imagen, teléfono público ya existente `+542281301249`, dirección centralizada, código postal, país, enlace de Maps y `sameAs` para Instagram/Facebook. Instagram se normaliza sin parámetros de campaña. El email reutiliza el correo confirmado `delgiorgiomaquinarias@yahoo.com.ar` o el reemplazo configurado en `VITE_CONTACT_EMAIL`; se excluyen direcciones de ejemplo.
 - `WebSite` en Inicio, con nombre, URL, idioma y referencia al negocio.
 - `BreadcrumbList` en páginas secundarias y fichas publicadas, con URLs canónicas.
 
@@ -169,13 +169,13 @@ npm run check
 npm run lint
 ```
 
-`check` ejecuta `check:seo`, que inspecciona el build real: ocho HTML públicos, trece administrativos, canonicals, ausencia de noindex público, imagen, favicon, JSON-LD, archivos estáticos y configuración de Hosting. Las once pruebas incluyen las tres existentes de catálogo y ocho casos de SEO (rutas, filtros, datos de productos, estados no indexables y escape de HTML/JSON-LD).
+`check` ejecuta `check:seo`, que inspecciona el build real: ocho HTML públicos, trece administrativos, canonicals, ausencia de noindex público, imagen, favicon, JSON-LD, archivos estáticos y configuración de Hosting. También ejecuta `check:bootstrap`, que verifica el aislamiento de la administración y la existencia de los módulos finales. Las once pruebas originales de catálogo/SEO se conservan; se agregaron nueve de bootstrap y render. Ver [BOOTSTRAP.md](BOOTSTRAP.md) para el diagnóstico del Soft 404 reportado por Search Console y los límites de la validación local.
 
 Las verificaciones exigen el dominio `www` en el sitemap, robots, canonical, Open Graph, Twitter y URLs internas del JSON-LD. Las referencias al host sin `www`, localhost y el host alternativo de Firebase solo permanecen como entradas de pruebas o patrones de rechazo; nunca se emiten como URLs SEO. También se comprueba que las imágenes de Storage no cambien y que las imágenes propias se normalicen al dominio final.
 
 Se probaron respuestas HTTP mediante Firebase Hosting Emulator con un proyecto demo, sin desplegar: treinta rutas y variantes, más el HTML compartido de maquinaria y el favicon. Incluyen las ocho páginas públicas, las trece rutas administrativas y una subruta administrativa futura, filtros del catálogo, redirecciones de `.html` y barra final, logo, robots y sitemap. Se confirmaron canonicals, MIME types y `X-Robots-Tag`, sin consultar Firestore. El navegador automatizado no estuvo disponible, por lo que queda pendiente la comprobación visual del DOM tras navegación SPA y de una ficha real en Search Console.
 
-Resultados finales: `npm run build` completado, `npm test` con **11/11 pruebas aprobadas**, `npm run check:seo` aprobado y ESLint sobre los archivos JavaScript modificados sin errores. El lint global tiene cinco errores anteriores a esta tarea: `ProductFormModal.jsx:91`, `header.jsx:18` y `:35`, `useAdminSession.js:34`, y `catalog.jsx:10`. La nueva implementación no agrega errores. El build conserva un aviso por tamaño del paquete principal (aproximadamente 785 kB, 225 kB comprimidos).
+La revisión SEO inicial completó build, once pruebas y check SEO. Tras la corrección de bootstrap se ejecutan **20 pruebas** y ambos checks, además de ESLint de los archivos modificados. Los errores globales previos en `ProductFormModal.jsx`, `header.jsx` y `useAdminSession.js` quedan fuera del alcance; el import sin uso de Catálogo se eliminó al revisar su carga. El aviso de tamaño corresponde ahora al SDK compartido de Firebase, cargado cuando se necesitan los datos. Los resultados y limitaciones del diagnóstico actual se documentan en [BOOTSTRAP.md](BOOTSTRAP.md).
 
 Después de revisar y publicar manualmente:
 
@@ -183,7 +183,7 @@ Después de revisar y publicar manualmente:
 2. Verificar o usar la propiedad del dominio en Google Search Console. Enviar `https://www.delgiorgiomaquinarias.com.ar/sitemap.xml` e inspeccionar URLs representativas. Si la propiedad no está verificada, completar personalmente el método de verificación correspondiente.
 3. Probar Home/Contacto en Rich Results Test y el JSON-LD en Schema Markup Validator. Revisar la URL canónica seleccionada por Google y solicitar indexación donde corresponda.
 4. Comprobar las vistas previas sociales y renovar sus cachés después de publicar. Las fichas dinámicas siguen teniendo la limitación explicada arriba.
-5. Confirmar `VITE_CONTACT_EMAIL` antes del build de publicación. No hay necesidad de agregar una variable de dominio: el dominio canónico es explícito y único.
+5. Si cambia el correo, configurar `VITE_CONTACT_EMAIL` antes del build; si está vacío, se utiliza el correo oficial confirmado. No hay necesidad de agregar una variable de dominio: el dominio canónico es explícito y único.
 6. Revisar en Search Console si hay rutas administrativas ya indexadas y seguir el procedimiento de retirada si es necesario. No modificar Auth ni permisos para facilitar la indexación.
 
 Referencias oficiales: [SEO de JavaScript](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics), [configuración de Hosting](https://firebase.google.com/docs/hosting/full-config), [LocalBusiness](https://developers.google.com/search/docs/appearance/structured-data/local-business), [robots.txt](https://developers.google.com/search/docs/crawling-indexing/robots/intro).

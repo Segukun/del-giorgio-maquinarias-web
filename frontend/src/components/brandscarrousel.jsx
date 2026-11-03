@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { fetchBrands } from "../firebase/brands.js";
+import { fetchBrands } from "../firebase/publicCatalog.js";
 import { useEffect, useState } from "react";
 import "../styles/brandscarrousel.css";
 

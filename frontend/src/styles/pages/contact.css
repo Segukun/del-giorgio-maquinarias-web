@@ -3,7 +3,7 @@
 .dg-contact__hero {
   padding: 4rem 0 4.5rem;
   color: white;
-  background: linear-gradient(90deg, rgba(18,33,49,.94), rgba(18,33,49,.55)), url('/hero-combine.jpg') center 55% / cover;
+  background: linear-gradient(90deg, rgba(18,33,49,.94), rgba(18,33,49,.55)), url('/hero-3.webp') center 55% / cover;
 }
 .dg-contact__eyebrow { display: block; font-size: .72rem; letter-spacing: .18em; font-weight: 800; color: var(--dg-red); }
 .dg-contact__hero .dg-contact__eyebrow { color: #fff; }

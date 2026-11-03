@@ -1,10 +1,11 @@
 import { ADMIN_PATHS, PUBLIC_PAGES, getPageMetadata, isAdminPath, productShellMetadata } from "../src/seo/metadata.js";
 import { replaceSeoHead } from "../src/seo/head.js";
+import { CONTACT_EMAIL } from "../src/config/contact.js";
 
 // Build-time HTML heads, not server rendering: every document loads the same React SPA.
 export default function seoPlugin() {
   let config;
-  const options = () => ({ contactEmail: config.env.VITE_CONTACT_EMAIL });
+  const options = () => ({ contactEmail: config.env.VITE_CONTACT_EMAIL?.trim() || CONTACT_EMAIL });
   return {
     name: "del-giorgio-seo",
     enforce: "post",

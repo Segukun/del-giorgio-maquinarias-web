@@ -8,8 +8,9 @@
     "build": "vite build",
     "lint": "eslint .",
     "test": "node --test",
-    "check": "npm run check:seo",
+    "check": "npm run check:seo && npm run check:bootstrap",
     "check:seo": "node scripts/verify-seo.mjs",
+    "check:bootstrap": "node scripts/verify-bootstrap.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

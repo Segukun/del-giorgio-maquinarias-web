@@ -2,15 +2,23 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebase/config";
+import { reportRuntimeError } from "../../runtime/errors.js";
 
 const RequireAdminAuth = ({ children }) => {
   const [user, setUser] = useState(undefined); // undefined = cargando
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => setUser(u));
-    return unsubscribe;
+    const fail = (error) => {
+      reportRuntimeError("admin.auth-guard", error);
+      setFailed(true);
+    };
+    try {
+      return onAuthStateChanged(auth, (u) => setUser(u), fail);
+    } catch (error) { fail(error); }
   }, []);
 
+  if (failed) return <p role="alert">No pudimos verificar tu acceso. Recargá la página para volver a intentarlo.</p>;
   if (user === undefined) {
     return (
       <main className="admin-login-page">
