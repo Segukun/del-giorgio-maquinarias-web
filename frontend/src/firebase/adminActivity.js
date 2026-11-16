@@ -10,21 +10,31 @@ export const logAdminActivity = async (action, targetName) => {
   if (user) {
     try {
       const profileSnap = await getDoc(doc(db, "users", user.uid));
+
       if (profileSnap.exists() && profileSnap.data().name) {
         userName = profileSnap.data().name;
       }
     } catch (err) {
-      console.warn("No se pudo obtener el nombre del usuario para el log de actividad:", err);
+      console.warn(
+        "No se pudo obtener el nombre del usuario para el log de actividad:",
+        err,
+      );
     }
   }
 
-  await addDoc(collection(db, ADMIN_ACTIVITY_COLLECTION), {
+  const activityData = {
     userEmail: user?.email ?? "Desconocido",
     userName,
     action,
-    targetName,
     createdAt: serverTimestamp(),
-  });
+  };
+
+  // Solamente agregamos targetName cuando tiene un valor válido.
+  if (typeof targetName === "string" && targetName.trim()) {
+    activityData.targetName = targetName.trim();
+  }
+
+  await addDoc(collection(db, ADMIN_ACTIVITY_COLLECTION), activityData);
 };
 
 export const fetchRecentActivity = async (topN = 5) => {

@@ -276,7 +276,6 @@ const ProductFormModal = ({ product, options, onClose, onSubmit }) => {
               required
               value={form.name}
               onChange={(event) => update("name", event.target.value)}
-              placeholder="Ej. John Deere 6155J"
             />
           </label>
 

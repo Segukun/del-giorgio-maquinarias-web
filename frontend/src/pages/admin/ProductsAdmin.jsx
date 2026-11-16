@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { FiCheckCircle, FiPackage, FiPlus, FiX } from "react-icons/fi";
+import {
+  FiCheckCircle,
+  FiPackage,
+  FiPlus,
+  FiX,
+  FiAlertCircle,
+} from "react-icons/fi";
 import AdminLayout from "../../components/admin/AdminLayout.jsx";
 import DeleteProductModal from "../../components/admin/DeleteProductModal.jsx";
 import Pagination from "../../components/admin/Pagination.jsx";
@@ -40,13 +46,14 @@ const ProductsAdmin = () => {
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [currentPage, setCurrentPage] = useState(1);
   const [modal, setModal] = useState(null);
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState(null);
 
   const loadData = async () => {
     setLoading(true);
     setError("");
     try {
-      const [productsData, brandsData, categoriesData] = await requestProductData();
+      const [productsData, brandsData, categoriesData] =
+        await requestProductData();
       setProducts(productsData);
       setBrands(brandsData);
       setCategories(categoriesData);
@@ -70,7 +77,10 @@ const ProductsAdmin = () => {
       })
       .catch((loadError) => {
         console.error(loadError);
-        if (!cancelled) setError("No pudimos cargar los productos. Probá recargar la página.");
+        if (!cancelled)
+          setError(
+            "No pudimos cargar los productos. Probá recargar la página.",
+          );
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -96,10 +106,14 @@ const ProductsAdmin = () => {
     return products.filter((product) => {
       const matchesQuery =
         !query ||
-        normalize(`${product.name ?? ""} ${product.brand ?? ""} ${product.category ?? ""}`).includes(query);
-      const matchesCategory = !filters.category || product.category === filters.category;
+        normalize(
+          `${product.name ?? ""} ${product.brand ?? ""} ${product.category ?? ""}`,
+        ).includes(query);
+      const matchesCategory =
+        !filters.category || product.category === filters.category;
       const matchesBrand = !filters.brand || product.brand === filters.brand;
-      const matchesStatus = !filters.status || product.status === filters.status;
+      const matchesStatus =
+        !filters.status || product.status === filters.status;
 
       return matchesQuery && matchesCategory && matchesBrand && matchesStatus;
     });
@@ -108,10 +122,16 @@ const ProductsAdmin = () => {
   const pageCount = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
   const safePage = Math.min(currentPage, pageCount);
   const pageStart = (safePage - 1) * PAGE_SIZE;
-  const visibleProducts = filteredProducts.slice(pageStart, pageStart + PAGE_SIZE);
+  const visibleProducts = filteredProducts.slice(
+    pageStart,
+    pageStart + PAGE_SIZE,
+  );
   const visibleProductsWithBrandImages = visibleProducts.map((product) => {
-    const brand = brands.find((item) => normalize(item.name) === normalize(product.brand ?? ""));
-    const brandLogo = typeof brand?.image === "string" ? brand.image : brand?.image?.url;
+    const brand = brands.find(
+      (item) => normalize(item.name) === normalize(product.brand ?? ""),
+    );
+    const brandLogo =
+      typeof brand?.image === "string" ? brand.image : brand?.image?.url;
     return { ...product, brandLogo: brandLogo ?? product.brandLogo };
   });
 
@@ -120,7 +140,9 @@ const ProductsAdmin = () => {
     setCurrentPage(1);
   };
 
-  const showNotice = (message) => setNotice(message);
+  const showNotice = (message, type = "success") => {
+    setNotice({ message, type });
+  };
 
   const handleToggleFeatured = async (id) => {
     const product = products.find((item) => item.id === id);
@@ -128,7 +150,9 @@ const ProductsAdmin = () => {
 
     const nextFeatured = !product.featured;
     setProducts((current) =>
-      current.map((item) => (item.id === id ? { ...item, featured: nextFeatured } : item)),
+      current.map((item) =>
+        item.id === id ? { ...item, featured: nextFeatured } : item,
+      ),
     );
 
     try {
@@ -137,22 +161,38 @@ const ProductsAdmin = () => {
       console.error(err);
       // revertimos si falló en el servidor
       setProducts((current) =>
-        current.map((item) => (item.id === id ? { ...item, featured: !nextFeatured } : item)),
+        current.map((item) =>
+          item.id === id ? { ...item, featured: !nextFeatured } : item,
+        ),
       );
-      showNotice("No se pudo actualizar el destacado. Intentá de nuevo.");
+      showNotice(
+        "No se pudo actualizar el destacado. Intentá de nuevo.",
+        "error",
+      );
     }
   };
 
   const handleDelete = async (id) => {
     const product = products.find((item) => item.id === id);
+
     try {
-      await deleteProduct(id);
+      await deleteProduct(id, product?.name);
+
       setProducts((current) => current.filter((item) => item.id !== id));
       setModal(null);
-      showNotice(`${product?.name ?? "El producto"} se eliminó correctamente.`);
+
+      showNotice(
+        `${product?.name ?? "El producto"} se eliminó correctamente.`,
+        "success",
+      );
     } catch (err) {
       console.error(err);
-      showNotice("No se pudo eliminar el producto. Intentá de nuevo.");
+
+      // Cerramos el modal para que el aviso de error
+      // no quede oculto detrás de él.
+      setModal(null);
+
+      showNotice("No se pudo eliminar el producto. Intentá de nuevo.", "error");
     }
   };
 
@@ -169,7 +209,10 @@ const ProductsAdmin = () => {
       await loadData();
     } catch (err) {
       console.error(err);
-      showNotice("Ocurrió un error al guardar el producto. Intentá de nuevo.");
+      showNotice(
+        "No se pudo actualizar el destacado. Intentá de nuevo.",
+        "error",
+      );
     }
   };
 
@@ -179,7 +222,13 @@ const ProductsAdmin = () => {
 
   if (loading) {
     return (
-      <AdminLayout onUnavailable={(section) => showNotice(`La sección ${section} queda preparada para una próxima etapa.`)}>
+      <AdminLayout
+        onUnavailable={(section) =>
+          showNotice(
+            `La sección ${section} queda preparada para una próxima etapa.`,
+          )
+        }
+      >
         <section className="dg-products-admin">
           <p>Cargando productos...</p>
         </section>
@@ -189,9 +238,16 @@ const ProductsAdmin = () => {
 
   return (
     <AdminLayout
-      onUnavailable={(section) => showNotice(`La sección ${section} queda preparada para una próxima etapa.`)}
+      onUnavailable={(section) =>
+        showNotice(
+          `La sección ${section} queda preparada para una próxima etapa.`,
+        )
+      }
     >
-      <section className="dg-products-admin" aria-labelledby="products-admin-title">
+      <section
+        className="dg-products-admin"
+        aria-labelledby="products-admin-title"
+      >
         <div className="dg-products-admin__heading">
           <div className="dg-products-admin__title-group">
             <span className="dg-products-admin__title-icon" aria-hidden="true">
@@ -220,10 +276,25 @@ const ProductsAdmin = () => {
         ) : null}
 
         {notice ? (
-          <div className="dg-admin-notice" role="status">
-            <FiCheckCircle aria-hidden="true" />
-            <span>{notice}</span>
-            <button type="button" aria-label="Cerrar aviso" onClick={() => setNotice("")}>
+          <div
+            className={`dg-admin-notice ${
+              notice.type === "error" ? "dg-admin-notice--error" : ""
+            }`}
+            role={notice.type === "error" ? "alert" : "status"}
+          >
+            {notice.type === "error" ? (
+              <FiAlertCircle aria-hidden="true" />
+            ) : (
+              <FiCheckCircle aria-hidden="true" />
+            )}
+
+            <span>{notice.message}</span>
+
+            <button
+              type="button"
+              aria-label="Cerrar aviso"
+              onClick={() => setNotice(null)}
+            >
               <FiX aria-hidden="true" />
             </button>
           </div>

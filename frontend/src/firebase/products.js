@@ -126,8 +126,22 @@ export const updateProduct = async (productId, data, imageItems) => {
 };
 
 export const deleteProduct = async (productId, productName) => {
+  // Primero ejecutamos la operación principal.
   await deleteDoc(doc(db, PRODUCTS_COLLECTION, productId));
-  await logAdminActivity("delete_product", productName);
+
+  // El registro de actividad es secundario:
+  // si falla, no debemos informar que falló la eliminación.
+  try {
+    await logAdminActivity(
+      "delete_product",
+      productName || "Producto sin nombre",
+    );
+  } catch (err) {
+    console.error(
+      "El producto se eliminó, pero no se pudo registrar la actividad:",
+      err,
+    );
+  }
 };
 
 export const toggleProductFeatured = async (productId, featured) => {
