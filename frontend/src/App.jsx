@@ -24,6 +24,7 @@ import About from "./pages/About.jsx";
 import Brands from "./pages/Brands.jsx";
 import PublicLayout from "./components/layout/PublicLayout.jsx";
 import RouteSEO from "./components/RouteSEO.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 import NotFound from "./pages/NotFound.jsx";
 
 import { useVisitorTracking } from "./hooks/useVisitorTracking.js";
@@ -35,6 +36,7 @@ export const AppRoutes = () => {
   return (
     <>
       <RouteSEO />
+      <ScrollToTop />
       <Routes>
 
         <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />

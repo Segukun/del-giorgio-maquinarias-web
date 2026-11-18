@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchProduct } from "../firebase/publicCatalog.js";
 import { trackProductView, trackWhatsappClick } from "../firebase/tracking.js";
 import SEO from "../components/SEO.jsx";
+import ProductGallery from "../components/common/ProductGallery.jsx";
 import { getProductMetadata } from "../seo/metadata.js";
 import "../styles/productdetail.css";
 
@@ -12,7 +13,6 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [activeImage, setActiveImage] = useState(0);
 
   const navigate = useNavigate()
   useEffect(() => {
@@ -29,7 +29,6 @@ const ProductDetail = () => {
           return;
         }
         setProduct(data);
-        setActiveImage(0);
         trackProductView(data.id, data.name);
       } catch (error) {
         console.error("No se pudo cargar el producto:", error);
@@ -40,7 +39,6 @@ const ProductDetail = () => {
     };
 
     loadProduct();
-    window.scrollTo({ top: 0, behavior: "instant" });
     return () => {
       isMounted = false;
     };
@@ -78,7 +76,6 @@ const ProductDetail = () => {
   }
 
   const images = product.images?.length ? product.images : [];
-  const hasImages = images.length > 0;
   const isUsed = product.condition === "Usado";
   const hoursLabel = isUsed ? product.hoursTag : "Nuevo";
 
@@ -111,41 +108,13 @@ const ProductDetail = () => {
 
       <div className="dg-pd__layout">
         {/* ---------- Galería ---------- */}
-        <div className="dg-pd__gallery">
-          <div className="dg-pd__gallery-stage">
-            {hasImages ? (
-              <img src={images[activeImage]} alt={product.name} />
-            ) : (
-              <div className="dg-pd__gallery-empty">Sin imágenes disponibles</div>
-            )}
-
-            <span className={`dg-pd__badge ${isUsed ? "is-used" : "is-new"}`}>
-              {isUsed ? "Usado" : "Nuevo"}
-            </span>
-
-            {images.length > 1 ? (
-              <span className="dg-pd__image-count">
-                {activeImage + 1} / {images.length}
-              </span>
-            ) : null}
-          </div>
-
-          {images.length > 1 ? (
-            <div className="dg-pd__thumbnails">
-              {images.map((url, index) => (
-                <button
-                  key={url}
-                  type="button"
-                  className={index === activeImage ? "is-active" : ""}
-                  onClick={() => setActiveImage(index)}
-                  aria-label={`Ver imagen ${index + 1} de ${product.name}`}
-                >
-                  <img src={url} alt="" />
-                </button>
-              ))}
-            </div>
-          ) : null}
-        </div>
+        <ProductGallery
+          key={id}
+          productName={product.name}
+          images={images}
+          variant="public"
+          badge={<span className={`dg-pd__badge ${isUsed ? "is-used" : "is-new"}`}>{isUsed ? "Usado" : "Nuevo"}</span>}
+        />
 
         {/* ---------- Panel de información ---------- */}
         <aside className="dg-pd__info">
