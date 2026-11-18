@@ -99,6 +99,9 @@
 
 .dg-category-card {
   position: relative;
+  padding: 1.1rem;
+  color: #fff;
+  text-decoration: none;
   border-radius: 14px;
   overflow: hidden;
   min-height: 190px;
@@ -121,66 +124,14 @@
   background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.75) 100%);
 }
 
-.dg-category-card__main {
+.dg-category-card h4 {
   position: relative;
   z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 1rem 1.1rem 0.5rem;
-  color: #fff;
-  text-decoration: none;
-}
-
-.dg-category-card__icon {
-  width: 26px;
-  height: 26px;
-  filter: brightness(0) invert(1);
-  transition: transform 0.2s ease;
-}
-
-.dg-category-card__main:hover .dg-category-card__icon {
-  transform: scale(1.15) rotate(-4deg);
-}
-
-.dg-category-card__main h4 {
+  margin: 0;
   font-size: 1.1rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-}
-
-.dg-category-card__subfilters {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0 1.1rem 1.1rem;
-}
-
-.dg-chip {
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  cursor: pointer;
-  backdrop-filter: blur(3px);
-  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
-}
-
-.dg-chip:hover,
-.dg-chip:focus-visible {
-  background: #fff;
-  color: #1a1a1a;
-  transform: scale(1.08);
-}
-
-.dg-chip:active {
-  transform: scale(0.95);
 }
 
 @media (max-width: 900px) {

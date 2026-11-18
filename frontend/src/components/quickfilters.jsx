@@ -31,22 +31,16 @@ const CATEGORY_FILTERS = [
     key: "tractores",
     title: "Tractores",
     image: "/category-tractores.webp",
-    icon: "/icon-tractor.svg",
-    subfilters: ["Cosechadoras", "Pulverización", "Mixers"],
   },
   {
     key: "sembradoras",
     title: "Sembradoras",
     image: "/category-sembradoras.webp",
-    icon: "/icon-seeder.svg",
-    subfilters: ["Sembradoras", "Fertilizadoras", "Plantadoras"],
   },
   {
     key: "rastrillos",
     title: "Rastrillos",
     image: "/category-rastrillos.webp",
-    icon: "/icon-rake.svg",
-    subfilters: ["Rastras", "Hileradores", "Otros"],
   },
 ];
 
@@ -75,26 +69,15 @@ const QuickFilters = () => {
 
       <div className="dg-quickfilters__categories">
         {CATEGORY_FILTERS.map((cat) => (
-          <div
+          <Link
             key={cat.key}
+            to={categoryHref(cat.title)}
             className="dg-category-card"
             style={{ backgroundImage: `url(${cat.image})` }}
           >
-            <div className="dg-category-card__overlay" />
-
-            <Link to={categoryHref(cat.title)} className="dg-category-card__main">
-              <img className="dg-category-card__icon" src={cat.icon} alt="" aria-hidden />
-              <h4>{cat.title}</h4>
-            </Link>
-
-            <div className="dg-category-card__subfilters">
-              {cat.subfilters.map((sub) => (
-                <Link key={sub} to={categoryHref(sub)} className="dg-chip">
-                  {sub}
-                </Link>
-              ))}
-            </div>
-          </div>
+            <div className="dg-category-card__overlay" aria-hidden="true" />
+            <h4>{cat.title}</h4>
+          </Link>
         ))}
       </div>
     </section>
