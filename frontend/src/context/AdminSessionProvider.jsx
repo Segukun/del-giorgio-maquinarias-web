@@ -48,11 +48,16 @@ export const AdminSessionProvider = ({ children }) => {
     setProfile(userProfile);
   };
 
+  const role = profile?.role ?? null;
+
   const value = {
     loading,
     user,
     profile,
-    isOwner: profile?.role === "owner",
+    role,
+    isOwner: role === "owner",
+    isAdmin: role === "admin",
+    canManageUsers: role === "owner" || role === "admin",
     refreshProfile,
     fetchAllUsers,
   };

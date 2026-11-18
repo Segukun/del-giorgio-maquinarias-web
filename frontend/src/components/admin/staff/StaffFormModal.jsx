@@ -1,12 +1,17 @@
 import { useState } from "react";
 import AdminModal from "../AdminModal.jsx";
 import { validateAdminUserForm } from "../../../utils/adminUserValidation.js";
+import { getAssignableRoles } from "../../../utils/adminPermissions.js";
+import { ROLES } from "../../../firebase/users.js";
 
-const StaffFormModal = ({ user, users, onClose, onSubmit }) => {
+const StaffFormModal = ({ user, users, currentUser, onClose, onSubmit }) => {
   const isEditing = Boolean(user);
+  const roleOptions = getAssignableRoles(currentUser, user);
+
   const [values, setValues] = useState({
     name: user?.name ?? "",
     email: user?.email ?? "",
+    role: user?.role ?? roleOptions[0] ?? "staff",
     password: "",
     confirmPassword: "",
   });
@@ -36,6 +41,7 @@ const StaffFormModal = ({ user, users, onClose, onSubmit }) => {
       {
         name: values.name,
         email: values.email,
+        role: values.role,
         password: values.password || undefined, // vacío al editar = no cambiar contraseña
       },
       isEditing,
@@ -45,13 +51,13 @@ const StaffFormModal = ({ user, users, onClose, onSubmit }) => {
   return (
     <AdminModal
       title={isEditing ? "Editar cuenta" : "Nuevo usuario"}
-      eyebrow={isEditing ? "Cuenta de personal" : "Alta de personal"}
+      eyebrow={isEditing ? `Cuenta: ${ROLES[user.role] ?? "Personal"}` : "Alta de usuario"}
       onClose={onClose}
       size="large"
     >
       <form className="dg-account-form dg-account-form--modal" onSubmit={handleSubmit} noValidate>
         <div className="dg-account-form__role-note">
-          <strong>Tipo de cuenta: Personal</strong>
+          <strong>Tipo de cuenta: {ROLES[values.role] ?? "Personal"}</strong>
           <span>Desde esta sección no se pueden crear ni convertir cuentas de propietario.</span>
         </div>
 
@@ -80,6 +86,19 @@ const StaffFormModal = ({ user, users, onClose, onSubmit }) => {
             />
             {errors.email ? <small id="staff-email-error">{errors.email}</small> : null}
           </label>
+
+          {roleOptions.length > 1 ? (
+            <label>
+              <span>Tipo de cuenta</span>
+              <select value={values.role} onChange={(event) => update("role", event.target.value)}>
+                {roleOptions.map((role) => (
+                  <option key={role} value={role}>
+                    {ROLES[role]}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : null}
 
           <label>
             <span>{isEditing ? "Nueva contraseña" : "Contraseña"}</span>

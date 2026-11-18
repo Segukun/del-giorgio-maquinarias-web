@@ -157,23 +157,69 @@ exports.onEventCreated = onDocumentCreated(
    ADMINISTRACIÓN DE PERSONAL
 ========================================================= */
 
-const requireOwner = async (request) => {
+const KNOWN_ROLES = ["owner", "admin", "staff"];
+
+// Roles que cada rol puede editar, eliminar y activar/desactivar.
+// Nadie administra a un owner ni a alguien de su mismo nivel.
+const MANAGEABLE_ROLES = {
+  owner: ["admin", "staff"],
+  admin: ["staff"],
+  staff: [],
+};
+
+// Roles con los que cada rol puede crear una cuenta nueva.
+const CREATABLE_ROLES = {
+  owner: ["admin", "staff"],
+  admin: ["staff"],
+  staff: [],
+};
+
+// Cambio de rol sobre una cuenta ajena:
+// - owner: puede dejar a admins y staff como admin o staff.
+// - admin: solo puede promover un staff a admin.
+const canSetRole = (actorRole, targetRole, newRole) => {
+  if (!MANAGEABLE_ROLES[actorRole]?.includes(targetRole)) return false;
+  if (actorRole === "owner") return ["admin", "staff"].includes(newRole);
+  if (actorRole === "admin") return targetRole === "staff" && newRole === "admin";
+  return false;
+};
+
+// El rol siempre se lee de Firestore, nunca del request.
+const getCaller = async (request) => {
   if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Debés iniciar sesión.");
+  }
+
+  const snap = await db.doc(`users/${request.auth.uid}`).get();
+  const data = snap.exists ? snap.data() : null;
+
+  if (!data || !KNOWN_ROLES.includes(data.role) || data.status === "inactive") {
     throw new HttpsError(
-      "unauthenticated",
-      "Debés iniciar sesión.",
+      "permission-denied",
+      "Tu cuenta no tiene permisos para realizar esta acción.",
     );
   }
 
-  const callerDoc = await db
-    .doc(`users/${request.auth.uid}`)
-    .get();
+  return { uid: request.auth.uid, role: data.role };
+};
 
-  if (!callerDoc.exists || callerDoc.data().role !== "owner") {
-    throw new HttpsError(
-      "permission-denied",
-      "Solo el propietario puede administrar personal.",
-    );
+const getTarget = async (uid) => {
+  const snap = await db.doc(`users/${uid}`).get();
+
+  if (!snap.exists) {
+    throw new HttpsError("not-found", "La cuenta no existe.");
+  }
+
+  return { uid, ...snap.data() };
+};
+
+const assertCanManage = (caller, target, message) => {
+  const allowed =
+    target.uid !== caller.uid &&
+    MANAGEABLE_ROLES[caller.role].includes(target.role);
+
+  if (!allowed) {
+    throw new HttpsError("permission-denied", message);
   }
 };
 
@@ -184,14 +230,22 @@ const requireOwner = async (request) => {
 exports.createStaffUser = onCall(
   { region: FUNCTIONS_REGION },
   async (request) => {
-    await requireOwner(request);
+    const caller = await getCaller(request);
 
     const { name, email, password } = request.data || {};
+    const role = request.data?.role ?? "staff";
 
     if (!name || !email || !password) {
       throw new HttpsError(
         "invalid-argument",
         "Faltan datos obligatorios.",
+      );
+    }
+
+    if (!CREATABLE_ROLES[caller.role].includes(role)) {
+      throw new HttpsError(
+        "permission-denied",
+        "No tenés permiso para crear una cuenta con este rol.",
       );
     }
 
@@ -211,6 +265,13 @@ exports.createStaffUser = onCall(
         );
       }
 
+      if (err.code === "auth/invalid-password") {
+        throw new HttpsError(
+          "invalid-argument",
+          "La contraseña debe tener al menos 6 caracteres.",
+        );
+      }
+
       logger.error("No se pudo crear el usuario:", {
         code: err.code,
       });
@@ -224,7 +285,7 @@ exports.createStaffUser = onCall(
     await db.doc(`users/${userRecord.uid}`).set({
       name,
       email,
-      role: "staff",
+      role,
       status: "active",
       createdAt: FieldValue.serverTimestamp(),
     });
@@ -241,14 +302,9 @@ exports.updateStaffUser = onCall(
   { region: FUNCTIONS_REGION },
   async (request) => {
     try {
-      await requireOwner(request);
+      const caller = await getCaller(request);
 
-      const {
-        uid,
-        name,
-        email,
-        password,
-      } = request.data || {};
+      const { uid, name, email, password, role } = request.data || {};
 
       if (!uid) {
         throw new HttpsError(
@@ -257,27 +313,31 @@ exports.updateStaffUser = onCall(
         );
       }
 
-      const isSelfEdit = uid === request.auth.uid;
+      const isSelfEdit = uid === caller.uid;
+      const target = await getTarget(uid);
 
-      const targetDoc = await db
-        .doc(`users/${uid}`)
-        .get();
-
-      if (!targetDoc.exists) {
-        throw new HttpsError(
-          "failed-precondition",
-          "La cuenta no existe.",
+      // Cualquier rol puede editar su propia cuenta.
+      // Para cuentas ajenas se aplica la jerarquía.
+      if (!isSelfEdit) {
+        assertCanManage(
+          caller,
+          target,
+          "No tenés permiso para editar esta cuenta.",
         );
       }
 
-      if (
-        !isSelfEdit &&
-        targetDoc.data().role !== "staff"
-      ) {
-        throw new HttpsError(
-          "failed-precondition",
-          "Solo se pueden editar cuentas de personal.",
-        );
+      // El rol solo cambia sobre cuentas ajenas y según la jerarquía.
+      let newRole;
+
+      if (role !== undefined && role !== target.role) {
+        if (isSelfEdit || !canSetRole(caller.role, target.role, role)) {
+          throw new HttpsError(
+            "permission-denied",
+            "No tenés permiso para cambiar el rol de esta cuenta.",
+          );
+        }
+
+        newRole = role;
       }
 
       const authUpdate = {};
@@ -319,6 +379,7 @@ exports.updateStaffUser = onCall(
 
       if (name) firestoreUpdate.name = name;
       if (email) firestoreUpdate.email = email;
+      if (newRole) firestoreUpdate.role = newRole;
 
       if (Object.keys(firestoreUpdate).length) {
         await db
@@ -345,7 +406,7 @@ exports.updateStaffUser = onCall(
 exports.deleteStaffUser = onCall(
   { region: FUNCTIONS_REGION },
   async (request) => {
-    await requireOwner(request);
+    const caller = await getCaller(request);
 
     const { uid } = request.data || {};
 
@@ -356,19 +417,13 @@ exports.deleteStaffUser = onCall(
       );
     }
 
-    const targetDoc = await db
-      .doc(`users/${uid}`)
-      .get();
+    const target = await getTarget(uid);
 
-    if (
-      !targetDoc.exists ||
-      targetDoc.data().role !== "staff"
-    ) {
-      throw new HttpsError(
-        "failed-precondition",
-        "Solo se pueden eliminar cuentas de personal.",
-      );
-    }
+    assertCanManage(
+      caller,
+      target,
+      "No tenés permiso para eliminar esta cuenta.",
+    );
 
     await getAuth().deleteUser(uid);
     await db.doc(`users/${uid}`).delete();
@@ -384,33 +439,24 @@ exports.deleteStaffUser = onCall(
 exports.toggleStaffStatus = onCall(
   { region: FUNCTIONS_REGION },
   async (request) => {
-    await requireOwner(request);
+    const caller = await getCaller(request);
 
     const { uid, status } = request.data || {};
 
-    if (
-      !uid ||
-      !["active", "inactive"].includes(status)
-    ) {
+    if (!uid || !["active", "inactive"].includes(status)) {
       throw new HttpsError(
         "invalid-argument",
         "Datos inválidos.",
       );
     }
 
-    const targetDoc = await db
-      .doc(`users/${uid}`)
-      .get();
+    const target = await getTarget(uid);
 
-    if (
-      !targetDoc.exists ||
-      targetDoc.data().role !== "staff"
-    ) {
-      throw new HttpsError(
-        "failed-precondition",
-        "Solo se puede cambiar el estado de personal.",
-      );
-    }
+    assertCanManage(
+      caller,
+      target,
+      "No tenés permiso para cambiar el estado de esta cuenta.",
+    );
 
     await getAuth().updateUser(uid, {
       disabled: status === "inactive",

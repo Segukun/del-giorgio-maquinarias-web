@@ -1,7 +1,7 @@
 import { FiUsers } from "react-icons/fi";
 import StaffRow from "./StaffRow.jsx";
 
-const StaffTable = ({ users, canManage, onEdit, onDelete }) => {
+const StaffTable = ({ users, currentUser, showActions, onEdit, onDelete }) => {
   if (!users.length) {
     return (
       <div className="dg-staff-table__empty">
@@ -14,14 +14,14 @@ const StaffTable = ({ users, canManage, onEdit, onDelete }) => {
 
   return (
     <div className="dg-staff-table__scroll">
-      <table className={`dg-staff-table ${canManage ? "can-manage" : "is-readonly"}`}>
+      <table className={`dg-staff-table ${showActions ? "can-manage" : "is-readonly"}`}>
         <thead>
           <tr>
             <th>Nombre</th>
             <th>Email</th>
             <th>Tipo de cuenta</th>
             <th>Estado</th>
-            {canManage ? <th>Acciones</th> : null}
+            {showActions ? <th>Acciones</th> : null}
           </tr>
         </thead>
         <tbody>
@@ -29,7 +29,8 @@ const StaffTable = ({ users, canManage, onEdit, onDelete }) => {
             <StaffRow
               key={user.id}
               user={user}
-              canManage={canManage}
+              currentUser={currentUser}
+              showActions={showActions}
               onEdit={onEdit}
               onDelete={onDelete}
             />

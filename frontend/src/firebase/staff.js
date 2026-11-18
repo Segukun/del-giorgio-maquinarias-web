@@ -7,14 +7,14 @@ export const fetchAllUsers = async () => {
   return snapshot.docs.map((docSnap) => ({ id: docSnap.id, ...docSnap.data() }));
 };
 
-export const createStaffUser = async ({ name, email, password }) => {
+export const createStaffUser = async ({ name, email, password, role }) => {
   const callable = httpsCallable(functions, "createStaffUser");
-  return callable({ name, email, password });
+  return callable({ name, email, password, role });
 };
 
-export const updateStaffUser = async ({ uid, name, email, password }) => {
+export const updateStaffUser = async ({ uid, name, email, password, role }) => {
   const callable = httpsCallable(functions, "updateStaffUser");
-  return callable({ uid, name, email, password });
+  return callable({ uid, name, email, password, role });
 };
 
 export const deleteStaffUser = async (uid) => {

@@ -1,6 +1,8 @@
+import { ROLES } from "../../../firebase/users.js";
+
 export const StaffRoleBadge = ({ role }) => (
   <span className={`dg-staff-badge dg-staff-badge--role is-${role}`}>
-    {role === "owner" ? "Propietario" : "Personal"}
+    {ROLES[role] ?? "Personal"}
   </span>
 );
 

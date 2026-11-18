@@ -11,7 +11,8 @@ const extractErrorMessage = (err, fallback) => {
 };
 
 const useAdminSession = () => {
-  const { user, profile, isOwner, fetchAllUsers, refreshProfile } = useContext(AdminSessionContext);
+  const { user, profile, role, isOwner, isAdmin, canManageUsers, fetchAllUsers, refreshProfile } =
+    useContext(AdminSessionContext);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -96,7 +97,10 @@ const useAdminSession = () => {
 
   return {
     users,
+    role,
     isOwner,
+    isAdmin,
+    canManageUsers,
     loading,
     error,
     currentUser,

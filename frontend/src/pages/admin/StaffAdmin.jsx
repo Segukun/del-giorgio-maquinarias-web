@@ -6,6 +6,8 @@ import StaffFormModal from "../../components/admin/staff/StaffFormModal.jsx";
 import StaffTable from "../../components/admin/staff/StaffTable.jsx";
 import StaffToolbar from "../../components/admin/staff/StaffToolbar.jsx";
 import useAdminSession from "../../hooks/useAdminSession.js";
+import { canCreateStaffAccounts } from "../../utils/adminPermissions.js";
+import { ROLES } from "../../firebase/users.js";
 import "../../styles/admin/layout.css";
 import "../../styles/admin/products.css";
 import "../../styles/admin/staff.css";
@@ -17,10 +19,13 @@ const normalize = (value) =>
     .replace(/[\u0300-\u036f]/g, "");
 
 const StaffAdmin = () => {
-  const { users, isOwner, createStaff, updateStaff, deleteStaff } = useAdminSession();
+  const { users, currentUser, createStaff, updateStaff, deleteStaff } = useAdminSession();
   const [query, setQuery] = useState("");
   const [modal, setModal] = useState(null);
   const [notice, setNotice] = useState("");
+
+  // Owner y admin gestionan personal; staff solo consulta.
+  const canManage = canCreateStaffAccounts(currentUser);
 
   const filteredUsers = useMemo(() => {
     const normalizedQuery = normalize(query.trim());
@@ -42,7 +47,7 @@ const StaffAdmin = () => {
     setNotice(
       isEditing
         ? `${form.name} se actualizó correctamente.`
-        : `${form.name} se agregó como personal.`,
+        : `${form.name} se agregó como ${(ROLES[form.role] ?? "personal").toLowerCase()}.`,
     );
   };
 
@@ -73,7 +78,7 @@ const StaffAdmin = () => {
             </div>
           </div>
 
-          {isOwner ? (
+          {canManage ? (
             <button
               className="dg-button dg-button--primary dg-products-admin__new"
               type="button"
@@ -85,12 +90,15 @@ const StaffAdmin = () => {
           ) : null}
         </div>
 
-        {!isOwner ? (
+        {!canManage ? (
           <div className="dg-staff-readonly" role="note">
             <FiEye aria-hidden="true" />
             <div>
               <strong>Vista de solo lectura</strong>
-              <span>Podés consultar las cuentas, pero solo el propietario puede administrarlas.</span>
+              <span>
+                Podés consultar las cuentas, pero solo propietarios y administradores pueden
+                gestionarlas.
+              </span>
             </div>
           </div>
         ) : null}
@@ -109,7 +117,8 @@ const StaffAdmin = () => {
           <StaffToolbar query={query} onQueryChange={setQuery} />
           <StaffTable
             users={filteredUsers}
-            canManage={isOwner}
+            currentUser={currentUser}
+            showActions={canManage}
             onEdit={(user) => setModal({ type: "form", user })}
             onDelete={(user) => setModal({ type: "delete", user })}
           />
@@ -121,16 +130,17 @@ const StaffAdmin = () => {
         </div>
       </section>
 
-      {modal?.type === "form" && isOwner ? (
+      {modal?.type === "form" && canManage ? (
         <StaffFormModal
           user={modal.user}
           users={users}
+          currentUser={currentUser}
           onClose={() => setModal(null)}
           onSubmit={handleSave}
         />
       ) : null}
 
-      {modal?.type === "delete" && isOwner ? (
+      {modal?.type === "delete" && canManage ? (
         <DeleteStaffModal
           user={modal.user}
           onClose={() => setModal(null)}

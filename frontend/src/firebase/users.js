@@ -3,6 +3,7 @@ import { db } from "./config";
 
 export const ROLES = {
   owner: "Propietario",
+  admin: "Administrador",
   staff: "Personal",
 };
 
