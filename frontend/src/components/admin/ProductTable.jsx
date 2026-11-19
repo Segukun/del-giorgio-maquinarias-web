@@ -1,13 +1,23 @@
+
 import { FiInbox } from "react-icons/fi";
 import ProductRow from "./ProductRow.jsx";
 
-const ProductTable = ({ products, onToggleFeatured, onEdit, onDelete, onView }) => {
+const ProductTable = ({
+  products,
+  onToggleFeatured,
+  onEdit,
+  onDelete,
+  onView,
+  featuredLoadingIds = new Set(),
+}) => {
   if (!products.length) {
     return (
       <div className="dg-product-table__empty">
         <FiInbox aria-hidden="true" />
         <strong>No encontramos productos</strong>
-        <span>Probá cambiando o limpiando los filtros.</span>
+        <span>
+          Probá cambiando o limpiando los filtros.
+        </span>
       </div>
     );
   }
@@ -26,6 +36,7 @@ const ProductTable = ({ products, onToggleFeatured, onEdit, onDelete, onView }) 
             <th>Acciones</th>
           </tr>
         </thead>
+
         <tbody>
           {products.map((product) => (
             <ProductRow
@@ -35,6 +46,9 @@ const ProductTable = ({ products, onToggleFeatured, onEdit, onDelete, onView }) 
               onEdit={onEdit}
               onDelete={onDelete}
               onView={onView}
+              isFeaturedLoading={featuredLoadingIds.has(
+                product.id,
+              )}
             />
           ))}
         </tbody>
